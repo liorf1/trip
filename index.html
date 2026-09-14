@@ -1,0 +1,971 @@
+<title>שנים עשר לילות במונטנגרו</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Secular+One&display=swap">
+<style id="appcss">
+:root{
+  --ink:#25302f; --ink-soft:#5b6664; --muted:#7c8582;
+  --paper:#f7f1e3; --paper-card:#fffcf5; --paper-sunk:#efe8d6;
+  --sea-deep:#1b4f66; --sea:#3a82a0; --sea-soft:#d9ebf0;
+  --pine-deep:#2c4a35; --pine:#4f7a57; --pine-soft:#e2ebdc;
+  --terracotta:#c1502e; --terracotta-soft:#f7e3db;
+  --gold:#c98f2e; --gold-ink:#7a5a16; --gold-soft:#f3e6c8;
+  --rule:rgba(37,48,47,.12); --rule-2:rgba(37,48,47,.24);
+  --shadow:0 1px 2px rgba(27,79,102,.06), 0 10px 28px -14px rgba(27,79,102,.35);
+  --shadow-sm:0 1px 2px rgba(27,79,102,.05), 0 5px 16px -12px rgba(27,79,102,.4);
+  --serif:"Bellefair",Georgia,"Times New Roman",serif;
+  --sans:"Heebo",system-ui,"Segoe UI",Arial,sans-serif;
+  --label:"Secular One","Heebo",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-lg:18px; --r:14px; --r-sm:12px;
+  --marker:var(--sea-deep); --marker-mid:var(--sea);
+  --marker-soft:var(--sea-soft); --marker-ink:var(--sea-deep);
+}
+[data-base="1"]{--marker:var(--sea-deep); --marker-mid:var(--sea); --marker-soft:var(--sea-soft); --marker-ink:var(--sea-deep)}
+[data-base="2"]{--marker:var(--pine-deep); --marker-mid:var(--pine); --marker-soft:var(--pine-soft); --marker-ink:var(--pine-deep)}
+[data-base="3"]{--marker:var(--gold); --marker-mid:var(--gold); --marker-soft:var(--gold-soft); --marker-ink:var(--gold-ink)}
+[data-base="0"]{--marker:var(--terracotta); --marker-mid:var(--terracotta); --marker-soft:var(--terracotta-soft); --marker-ink:var(--terracotta)}
+
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink);
+  background-color:var(--paper);
+  background-image:radial-gradient(circle at 1px 1px, rgba(37,48,47,.06) 1px, transparent 0);
+  background-size:16px 16px;
+  font-family:var(--sans); font-size:15.5px; line-height:1.6; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px; margin:0 auto; padding-inline:20px; padding-block:0 80px}
+h1,h2,h3{margin:0; text-wrap:balance}
+button{font:inherit; color:inherit; cursor:pointer}
+input,select,textarea{font:inherit; color:inherit}
+a{color:var(--sea-deep)}
+:focus-visible{outline:2px solid var(--sea); outline-offset:2px; border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important}}
+.ltr{direction:ltr; unicode-bidi:isolate; display:inline-block}
+
+/* ---------- masthead ---------- */
+.masthead{
+  display:flex; flex-wrap:wrap; gap:30px 44px; align-items:flex-end;
+  justify-content:space-between; padding-block:48px 30px;
+  border-bottom:1px solid var(--rule);
+}
+.eyebrow{
+  margin:0 0 10px; font-family:var(--label); font-size:.82rem;
+  letter-spacing:.03em; color:var(--terracotta);
+}
+.masthead h1{
+  font-family:var(--serif); font-weight:400; font-size:clamp(2.3rem,6vw,3.2rem);
+  line-height:1.05; color:var(--ink);
+}
+.masthead h1 em{font-style:normal; color:var(--sea-deep)}
+.pax{margin:12px 0 0; font-size:.9rem; color:var(--ink-soft)}
+.pax b{font-family:var(--label); font-weight:400; color:var(--ink)}
+
+.gauges{display:flex; flex-wrap:wrap; gap:14px}
+.gauge{
+  background:var(--paper-card); border-radius:var(--r); padding:13px 18px;
+  box-shadow:var(--shadow-sm); min-width:150px;
+}
+.gauge .g-label{font-family:var(--label); font-size:.72rem; letter-spacing:.03em; color:var(--muted)}
+.gauge .g-val{
+  font-family:var(--label); font-size:1.6rem; line-height:1.1; margin-top:2px;
+  color:var(--sea-deep); direction:ltr; unicode-bidi:isolate; text-align:start;
+  font-variant-numeric:tabular-nums;
+}
+.gauge .g-sub{font-size:.76rem; color:var(--ink-soft); margin-top:2px}
+.nightbar{display:flex; gap:2px; margin-top:9px}
+.nightbar i{flex:1; height:6px; border-radius:999px; background:var(--rule)}
+.nightbar i.on{background:var(--sea)}
+.nightbar i.past{opacity:.45}
+
+/* ---------- view switch ---------- */
+.viewbar{
+  display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between;
+  padding-block:16px; position:sticky; top:0; z-index:20;
+  background:color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--rule);
+}
+.tabs{display:flex; gap:3px; background:var(--paper-sunk); padding:4px; border-radius:999px}
+.tabs button{
+  border:0; background:transparent; padding:6px 18px; border-radius:999px;
+  font-family:var(--label); font-size:.85rem; color:var(--ink-soft);
+}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--paper-card); color:var(--sea-deep); box-shadow:var(--shadow-sm)}
+.bar-right{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.btn{
+  border:1px solid var(--rule); background:var(--paper-card); padding:7px 16px;
+  border-radius:999px; font-size:.85rem; box-shadow:var(--shadow-sm); color:var(--ink);
+}
+.btn:hover{border-color:var(--rule-2)}
+.btn:disabled{opacity:.4; box-shadow:none; cursor:default}
+.btn-primary{background:var(--sea-deep); border-color:var(--sea-deep); color:var(--paper-card); font-family:var(--label)}
+.btn-primary:hover{background:#16404f; border-color:#16404f}
+
+.notice{
+  margin-block:16px; padding:11px 15px; border-radius:var(--r-sm);
+  background:var(--terracotta-soft); color:var(--terracotta); font-size:.88rem;
+}
+
+/* ---------- day spine ---------- */
+.spine{display:flex; flex-direction:column}
+.day{
+  display:grid; grid-template-columns:92px minmax(0,1fr); gap:0 22px;
+  padding-block:18px; border-bottom:1px solid var(--rule);
+}
+.day.is-today .dnum{color:var(--terracotta)}
+.datecol{position:relative}
+.dow{font-family:var(--label); font-size:.76rem; color:var(--muted)}
+.dnum{
+  font-family:var(--serif); font-size:2.1rem; line-height:1; margin-top:1px;
+  color:var(--marker-ink); direction:ltr; unicode-bidi:isolate; text-align:start;
+}
+.dmon{font-size:.74rem; color:var(--muted); margin-top:2px}
+.dtag{display:inline-block; margin-top:9px; font-family:var(--label); font-size:.72rem; color:var(--terracotta)}
+.lanes{display:flex; flex-direction:column; gap:9px; min-width:0}
+
+/* ---------- items ---------- */
+.item{
+  display:grid; grid-template-columns:76px minmax(0,1fr) auto; gap:0 14px; align-items:baseline;
+  width:100%; text-align:start; background:var(--paper-card); border:0;
+  border-inline-start:3px solid var(--marker-mid);
+  border-radius:var(--r); padding:13px 17px; box-shadow:var(--shadow-sm);
+}
+.item:hover{box-shadow:var(--shadow)}
+.item.s-done{background:var(--pine-soft); border-inline-start-color:var(--pine)}
+.item.s-idea{
+  background:rgba(255,255,255,.55); box-shadow:none;
+  border:1px dashed var(--rule-2); border-inline-start:3px dashed var(--marker-mid);
+}
+.item.s-skipped{opacity:.45; box-shadow:none; border-inline-start-color:var(--rule-2)}
+.item.s-skipped .i-title{text-decoration:line-through}
+.i-time{
+  display:block; font-size:.78rem; color:var(--ink-soft); font-variant-numeric:tabular-nums;
+  direction:ltr; unicode-bidi:isolate; text-align:start; white-space:nowrap;
+}
+.i-body{display:block; min-width:0}
+.i-title{display:block; font-size:.98rem; font-weight:500; line-height:1.4}
+.i-meta{display:block; font-size:.82rem; color:var(--ink-soft); margin-top:1px; word-break:break-word}
+.i-meta .kind{font-family:var(--label); font-size:.7rem; color:var(--marker-ink); margin-inline-end:8px}
+.i-right{display:flex; align-items:center; gap:10px; white-space:nowrap}
+.i-cost{font-size:.82rem; color:var(--ink-soft); font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate}
+.i-cost.none{color:var(--terracotta)}
+.chip{
+  display:inline-flex; align-items:center; font-family:var(--label); font-size:.7rem;
+  padding:4px 11px; border-radius:999px; background:var(--paper-sunk); color:var(--ink-soft);
+}
+.chip.booked{background:var(--sea-soft); color:var(--sea-deep)}
+.chip.done{background:var(--pine-soft); color:var(--pine-deep)}
+.chip.idea{background:transparent; border:1px dashed var(--rule-2); color:var(--muted)}
+
+/* ---------- whose idea it was ---------- */
+.srcs{display:inline-flex; gap:5px; flex-wrap:wrap}
+.pill{
+  display:inline-flex; align-items:center; font-family:var(--label); font-size:.66rem;
+  padding:3px 9px; border-radius:999px; background:transparent;
+  border:1px solid currentColor; letter-spacing:.02em; line-height:1.5;
+}
+.pill.anna{color:var(--gold-ink)}
+.pill.fb{color:var(--sea-deep)}
+.pill.claude{color:var(--pine-deep)}
+.srcpick{display:flex; gap:16px; flex-wrap:wrap; padding-top:3px}
+.pickbox{display:inline-flex; align-items:center; gap:7px; font-size:.86rem; cursor:pointer}
+.pickbox input[type="checkbox"]{width:auto; padding:0; margin:0; accent-color:var(--sea-deep)}
+
+.cont{
+  display:flex; align-items:center; gap:9px; padding:11px 15px; font-size:.88rem;
+  color:var(--marker-ink); background:var(--marker-soft); border-radius:var(--r-sm);
+}
+.gap{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  width:100%; text-align:start; background:var(--terracotta-soft);
+  border:1px dashed color-mix(in srgb, var(--terracotta) 40%, transparent);
+  border-radius:var(--r-sm); padding:11px 15px; color:var(--terracotta); font-size:.88rem;
+}
+.gap:hover{border-color:var(--terracotta)}
+.gap.soft{background:rgba(255,255,255,.55); border-color:var(--rule-2); color:var(--muted)}
+.gap.soft:hover{border-color:var(--rule-2); background:rgba(255,255,255,.85)}
+.gap .plus{font-size:1rem; line-height:1}
+
+/* ---------- legs ---------- */
+.leg{
+  display:grid; grid-template-columns:minmax(92px,max-content) minmax(0,1fr) auto;
+  gap:6px 22px; align-items:baseline; padding:22px 0 16px; margin-top:34px;
+  border-top:1px solid var(--rule);
+}
+.leg:first-child{margin-top:8px; border-top:0}
+.leg-n{
+  display:flex; align-items:center; gap:8px; white-space:nowrap; padding-top:7px;
+  font-family:var(--label); font-size:.76rem; letter-spacing:.02em; color:var(--marker-ink);
+}
+.leg-n::before{content:''; width:10px; height:10px; border-radius:50%; background:var(--marker); flex-shrink:0}
+.leg-main{min-width:0}
+.leg h3{font-family:var(--serif); font-weight:400; font-size:clamp(1.5rem,3.4vw,1.9rem); line-height:1.15}
+.leg h3 button{border:0; background:none; padding:0; font:inherit; color:inherit; text-align:start}
+.leg h3 button:hover{color:var(--marker-ink)}
+.leg-meta{font-size:.84rem; color:var(--ink-soft); margin-top:3px}
+.leg-meta .n{font-family:var(--label); color:var(--ink)}
+.leg-right{display:flex; gap:10px; align-items:center; white-space:nowrap}
+.legdays{display:flex; flex-direction:column}
+.tally{margin-top:30px; padding-top:14px; border-top:1px solid var(--rule); font-size:.86rem; color:var(--ink-soft)}
+.railnote{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-size:.86rem; color:var(--sea-deep); background:var(--sea-soft);
+  border-radius:var(--r-sm); padding:10px 15px;
+}
+.railnote b{font-weight:500; font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate}
+.railnote button{border:0; background:none; padding:0; font:inherit; font-size:.82rem; color:var(--sea-deep); text-decoration:underline; text-underline-offset:3px}
+
+/* ---------- trip sub-views ---------- */
+.subtabs{display:inline-flex; gap:3px; background:var(--paper-sunk); padding:4px; border-radius:999px; margin-top:22px}
+.subtabs button{border:0; background:transparent; padding:5px 17px; border-radius:999px; font-family:var(--label); font-size:.82rem; color:var(--ink-soft)}
+.subtabs button[aria-selected="true"]{background:var(--paper-card); color:var(--sea-deep); box-shadow:var(--shadow-sm)}
+.basegrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin-top:22px}
+.basecard{
+  display:flex; flex-direction:column; text-align:start; width:100%; border:0;
+  background:var(--paper-card); border-radius:var(--r-lg); padding:22px 24px;
+  box-shadow:var(--shadow); transition:transform .25s ease, box-shadow .25s ease;
+}
+.basecard:hover{transform:translateY(-2px)}
+.basecard.empty{background:rgba(255,255,255,.55); box-shadow:none; border:1px dashed color-mix(in srgb, var(--terracotta) 40%, transparent)}
+.bc-n{display:flex; align-items:center; gap:8px; font-family:var(--label); font-size:.76rem; color:var(--marker-ink)}
+.bc-n::before{content:''; width:10px; height:10px; border-radius:50%; background:var(--marker); flex-shrink:0}
+.basecard h3{font-family:var(--serif); font-weight:400; font-size:1.65rem; line-height:1.15; margin-top:8px}
+.bc-meta{font-size:.84rem; color:var(--ink-soft); margin-top:5px}
+.bc-days{display:flex; gap:3px; margin-top:auto; padding-top:18px}
+.bc-days i{flex:1; height:6px; border-radius:999px; background:var(--rule)}
+.bc-days i.on{background:var(--marker-mid)}
+.bc-plan{font-size:.8rem; color:var(--ink-soft); margin-top:9px}
+.bc-plan.warn{color:var(--terracotta)}
+.bc-foot{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:14px; padding-top:13px; border-top:1px dashed var(--rule)}
+.backrow{display:flex; gap:9px; align-items:center; margin-top:22px; flex-wrap:wrap}
+.draghint{font-size:.78rem; color:var(--muted); margin-inline-start:6px}
+
+/* ---------- drag to another day ---------- */
+.item[draggable="true"]{cursor:grab}
+.item[draggable="true"]:active{cursor:grabbing}
+.item.dragging{opacity:.35; box-shadow:none}
+.day.drop-on{background:var(--marker-soft); border-radius:var(--r-sm)}
+.day.drop-on .lanes{outline:2px dashed var(--marker-mid); outline-offset:7px; border-radius:6px}
+
+/* ---------- day view ---------- */
+.dayhead{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; justify-content:space-between; padding-block:30px 6px}
+.dayhead h2{font-family:var(--serif); font-weight:400; font-size:clamp(1.9rem,4.6vw,2.6rem); line-height:1.1}
+.dayhead .sub{font-size:.86rem; color:var(--ink-soft); margin-top:6px}
+.daynav{display:flex; gap:8px}
+.bigitem{
+  background:var(--paper-card); border:0; border-inline-start:3px solid var(--marker-mid);
+  border-radius:var(--r-lg); padding:22px 24px; margin-top:14px; box-shadow:var(--shadow);
+}
+.bigitem.s-done{background:var(--pine-soft); border-inline-start-color:var(--pine)}
+.bigitem.s-idea{background:rgba(255,255,255,.55); box-shadow:none; border:1px dashed var(--rule-2); border-inline-start:3px dashed var(--marker-mid)}
+.bigitem.s-skipped{opacity:.45; box-shadow:none}
+.bi-top{display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; justify-content:space-between}
+.bi-when{font-family:var(--label); font-size:.78rem; color:var(--marker-ink)}
+.bi-when .t{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate}
+.bi-title{font-family:var(--serif); font-size:1.6rem; font-weight:400; line-height:1.2; margin-top:5px}
+.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px 24px; margin-top:18px}
+.fact .k{font-family:var(--label); font-size:.72rem; color:var(--muted)}
+.fact .v{font-size:.92rem; margin-top:1px; word-break:break-word}
+.fact .v.mono{font-family:var(--mono); font-size:.82rem; direction:ltr; unicode-bidi:isolate; text-align:start; font-variant-numeric:tabular-nums}
+.bi-notes{margin-top:16px; padding-top:14px; border-top:1px dashed var(--rule); font-size:.9rem; color:var(--ink-soft); white-space:pre-wrap}
+
+/* ---------- money ---------- */
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--rule); border-radius:var(--r-lg); overflow:hidden; margin-top:24px; box-shadow:var(--shadow)}
+.tile{background:var(--paper-card); padding:18px 20px}
+.tile .k{font-family:var(--label); font-size:.72rem; color:var(--muted)}
+.tile .v{font-family:var(--label); font-size:1.75rem; line-height:1.15; margin-top:4px; color:var(--sea-deep); direction:ltr; unicode-bidi:isolate; text-align:start; font-variant-numeric:tabular-nums}
+.tile .s{font-size:.76rem; color:var(--ink-soft); margin-top:2px}
+.tile.warn .v{color:var(--terracotta)}
+.tablewrap{overflow-x:auto; margin-top:24px; border-radius:var(--r-lg); background:var(--paper-card); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; min-width:660px; font-size:.88rem}
+th{text-align:start; font-family:var(--label); font-size:.72rem; color:var(--muted); padding:13px 18px; border-bottom:1px solid var(--rule); white-space:nowrap}
+td{padding:12px 18px; border-bottom:1px solid var(--rule); vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:left; direction:ltr; font-variant-numeric:tabular-nums; white-space:nowrap}
+tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); background:var(--paper-sunk)}
+.rate{display:flex; align-items:center; gap:9px; font-size:.85rem; color:var(--ink-soft)}
+.rate input{width:74px; padding:6px 10px; border:1px solid var(--rule); border-radius:999px; background:var(--paper-card); font-size:.85rem; direction:ltr; text-align:center}
+.sectitle{font-family:var(--serif); font-size:1.5rem; font-weight:400; margin-top:36px}
+.empty{padding:44px 0; color:var(--muted); font-size:.92rem}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed; inset:0; background:rgba(37,48,47,.34); z-index:40}
+.drawer{
+  position:fixed; z-index:41; top:0; bottom:0; inset-inline-start:0; width:min(440px,100%);
+  background:var(--paper-card); overflow-y:auto; padding:26px 24px 44px;
+  box-shadow:12px 0 44px -22px rgba(27,79,102,.5);
+}
+.drawer h3{font-family:var(--serif); font-size:1.75rem; font-weight:400}
+.form{display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:22px}
+.f{display:flex; flex-direction:column; gap:6px; min-width:0}
+.f.full{grid-column:1/-1}
+.f label{font-family:var(--label); font-size:.72rem; color:var(--muted)}
+.f input,.f select,.f textarea{padding:9px 12px; border:1px solid var(--rule); border-radius:10px; background:var(--paper); font-size:.92rem; width:100%}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--sea); outline:none}
+.f input[type="time"],.f input[type="number"],.f input[type="url"]{direction:ltr; text-align:start}
+.f textarea{min-height:96px; resize:vertical; font-family:inherit; line-height:1.55}
+.drawer-actions{display:flex; gap:10px; margin-top:26px; flex-wrap:wrap}
+.btn-danger{border-color:color-mix(in srgb, var(--terracotta) 40%, transparent); color:var(--terracotta); margin-inline-start:auto}
+
+@media (max-width:640px){
+  .day{grid-template-columns:1fr; gap:10px}
+  .datecol{display:flex; align-items:baseline; gap:10px}
+  .dnum{font-size:1.6rem}
+  .dtag{margin-top:0}
+  .leg{grid-template-columns:1fr; gap:8px}
+  .leg-n{padding-top:0}
+  .item{grid-template-columns:1fr; gap:3px; padding:14px 16px}
+  .i-right{margin-top:7px}
+  .basecard,.bigitem{padding:18px 18px}
+  .form{grid-template-columns:1fr}
+}
+</style>
+
+<template id="shell">
+<div class="wrap" dir="rtl" lang="he">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">23 בספטמבר – 5 באוקטובר 2026 · 12 לילות · טיבט</p>
+      <h1>שנים עשר לילות ב<em>מונטנגרו</em></h1>
+      <p class="pax">משפחה · חמישה נוסעים · שני צמחונים</p>
+    </div>
+    <div class="gauges" id="gauges"></div>
+  </header>
+
+  <nav class="viewbar">
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-view="trip" aria-selected="true">הטיול</button>
+      <button role="tab" data-view="flights" aria-selected="false">טיסות</button>
+      <button role="tab" data-view="day" aria-selected="false">יום</button>
+      <button role="tab" data-view="money" aria-selected="false">כסף</button>
+    </div>
+    <div class="bar-right">
+      <span id="savestate" style="font-size:12.5px;color:var(--muted)"></span>
+      <button class="btn btn-primary" id="addbtn">הוספת פריט</button>
+    </div>
+  </nav>
+
+  <div id="notice"></div>
+  <main id="stage"></main>
+</div>
+
+<div id="drawerhost" dir="rtl" lang="he"></div>
+</template>
+<div id="root"></div>
+
+<script type="application/json" id="trip-data">{"items":{"bud-belveder":{"actual":"","conf":"","cur":"EUR","day":"2026-10-04","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=Belveder%20Restaurant%2C%20Rijeka%20Crnojevi%C4%87a%2C%20Montenegro","nights":"","notes":"מהפוסט: לא רחוק מאגם סקאדר, טעימה ועם נוף מהמם. משתלבת ביום השיט.","paidBy":"","place":"באזור רייקה צ׳רנוביצה","planned":"100","region":"","src":["fb"],"status":"idea","time":"13:45","title":"מסעדת Belveder","type":"food"},"bud-bluecave":{"actual":"","conf":"","cur":"EUR","day":"2026-10-02","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=Blue%20Cave%20Plava%20%C5%A0pilja%2C%20Lu%C5%A1tica%2C%20Montenegro","nights":"","notes":"מהפוסט: שיט חמוד שרואים בו את כל המפרץ, עם עצירה קצרה בפראסט וטבילה ליד המערה הכחולה.\nאזהרה מהפוסט: למי שסובל מבעיות בגב — לחשוב פעמיים. ספיד-בוט חובט.\nזו חלופה ליום קוטור ברגל, לא תוספת — שניהם ימים במפרץ. אם בוחרים בשיט, כדאי להעביר את הטיפוס לסן ג׳ובאני ליום אחר.","paidBy":"","place":"מפרץ קוטור","planned":"","region":"","src":["fb"],"status":"idea","time":"09:00","title":"ספיד-בוט למערה הכחולה","type":"activity"},"bud-kotor-cablecar":{"actual":"","conf":"","cur":"EUR","day":"2026-10-03","endTime":"","link":"https://www.kotorcablecar.me/","nights":"","notes":"מהפוסט: הם לא עשו את הרכבל אלא עלו למעלה ברכב, ובחרו להגיע לשקיעה.\nלמעלה יש מגלשת הרים. הם קנו כרטיס לתור מהיר (נמכר באתר עד 18:00) — והתור המהיר לא היה מהיר: חיכו שעה וכמעט פיספסו את השקיעה, שבשבילה הגיעו. אם השקיעה היא המטרה — לתכנן את הזמן בהתאם.\nיש שם אווירה נחמדה ומסעדה עם נוף מושלם. הם ירדו בכביש הסרפנטינות בשביל החוויה.\nמשתלב עם לובצ׳ן וניגושי באותו יום — זה אותו הר.","paidBy":"","place":"מעל קוטור","planned":"","region":"","src":["fb"],"status":"idea","time":"15:30","title":"רכבל קוטור, מגלשת הרים ושקיעה","type":"activity"},"bud-kotor":{"actual":"","conf":"","cur":"EUR","day":"2026-10-02","endTime":"13:00","link":"https://en.wikipedia.org/wiki/Fortifications_of_Kotor","nights":"","notes":"העלייה למצודה היא כ-1350 מדרגות מעל העיר העתיקה, כשעה-שעתיים הלוך וחזור. הנוף על מפרץ קוטור שווה את זה.\nלצאת מוקדם: חם בצהריים ואוניות קרוז ממלאות את העיר העתיקה מאמצע הבוקר.\nיש דמי כניסה לחומות — לא ידוע לי הסכום העדכני.","paidBy":"","place":"קוטור, כ-35 דקות מבודווה","planned":"","region":"","src":["claude"],"status":"idea","time":"08:30","title":"קוטור והטיפוס למצודת סן ג׳ובאני","type":"activity"},"bud-lipa-cave":{"actual":"","conf":"","cur":"EUR","day":"2026-10-04","endTime":"","link":"https://lipa-cave.me/","nights":"","notes":"מהפוסט: נחמדה, ובריחה טובה מהחום שבחוץ. אפשר לשלב באותו יום עם אגם סקאדר — הכול קרוב זה לזה.\nבתחילת אוקטובר החום פחות בעיה, אז זה פחות הצלה ויותר עניין.","paidBy":"","place":"ליד צטיניה, באזור סקאדר","planned":"","region":"","src":["fb"],"status":"idea","time":"12:30","title":"מערת ליפה","type":"activity"},"bud-lovcen":{"actual":"","conf":"","cur":"EUR","day":"2026-10-03","endTime":"13:00","link":"https://nparkovi.me/parks/lovcen","nights":"","notes":"עולים בכביש סרפנטינות מקוטור — הנסיעה עצמה חלק מהחוויה, עם תצפיות על כל המפרץ.\nמהחניה עולים כ-461 מדרגות למאוזוליאום בפסגה. מלמעלה רואים חלק גדול מהמדינה ביום בהיר.\nלא לנסות את הכביש הזה בערפל או בגשם.","paidBy":"","place":"פארק לאומי לובצ׳ן","planned":"","region":"","src":["claude"],"status":"idea","time":"09:00","title":"פארק לובצ׳ן והמאוזוליאום של ניגוש","type":"activity"},"bud-njegusi":{"actual":"","conf":"","cur":"EUR","day":"2026-10-03","endTime":"","link":"https://en.wikipedia.org/wiki/Njegu%C5%A1i","nights":"","notes":"כפר קטן על הדרך בחזרה מלובצ׳ן, מפורסם בנקניק המעושן ובגבינות שלו.\nהמטבח שם מאוד בשרי — שווה לבדוק מראש שיש משהו גם לצמחונים.","paidBy":"","place":"על כביש לובצ׳ן","planned":"","region":"","src":["claude"],"status":"idea","time":"13:15","title":"עצירה בכפר ניגושי","type":"food"},"bud-oldtown":{"actual":"","conf":"","cur":"EUR","day":"2026-10-01","endTime":"","link":"https://en.wikipedia.org/wiki/Budva","nights":"","notes":"ערב ראשון בבודווה אחרי נסיעה ארוכה — סיבוב בעיר העתיקה ואוכל, בלי לתכנן יותר מדי.\nהמצודה וחומות העיר פתוחים לעלייה בתשלום קטן, שקיעה יפה משם.","paidBy":"","place":"Stari Grad, בודווה","planned":"","region":"","src":["claude"],"status":"idea","time":"18:00","title":"העיר העתיקה של בודווה","type":"activity"},"bud-pavlova":{"actual":"","conf":"","cur":"EUR","day":"2026-10-04","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=Pavlova%20Strana%20viewpoint%2C%20Montenegro","nights":"","notes":"מהפוסט: תצפית באזור אגם סקאדר, קרובה לשאר הדברים שם — \"הכל קרוב זה לזה\".\nזה הפיתול המפורסם של הנהר — עצירה של עשר דקות בדרך.","paidBy":"","place":"מעל נהר צרנוייביץ׳","planned":"0","region":"","src":["fb"],"status":"idea","time":"15:30","title":"תצפית פאבלובה סטראנה","type":"activity"},"bud-perast":{"actual":"","conf":"","cur":"EUR","day":"2026-10-02","endTime":"","link":"https://en.wikipedia.org/wiki/Our_Lady_of_the_Rocks","nights":"","notes":"עיירה קטנה של אבן על המפרץ, וממנה סירה קצרה לאי המלאכותי עם הכנסייה.\nמהפוסט: הם הגיעו לפראסט כעצירה קצרה בתוך שיט הספיד-בוט למערה הכחולה, ואומרים שלא באמת מספיקים שם הרבה.\nאם פראסט חשובה לכם — להגיע אליה בנפרד ברכב ולקחת סירה מהרציף, ולא לסמוך על השיט הגדול.","paidBy":"","place":"פראסט, כ-15 דקות מעבר לקוטור","planned":"","region":"","src":["claude","fb"],"status":"idea","time":"14:00","title":"פראסט וגבירתנו שבסלע","type":"activity"},"bud-pomodorino":{"actual":"","conf":"","cur":"EUR","day":"2026-10-02","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=Pomodorino%2C%20Kotor%2C%20Montenegro","nights":"","notes":"מהפוסט: מסעדת פסטות טעימה בקוטור.\nפסטה היא כנראה ההימור הבטוח ביותר לצמחונים בטיול הזה.","paidBy":"","place":"קוטור","planned":"100","region":"","src":["fb"],"status":"idea","time":"13:30","title":"Pomodorino, קוטור","type":"food"},"bud-skadar":{"actual":"","conf":"","cur":"EUR","day":"2026-10-04","endTime":"","link":"https://nparkovi.me/parks/skadarsko%20jezero","nights":"","notes":"מהפוסט, וזה הדבר שהכי התלהבו ממנו: את השיט לקחו מרייקה צ׳רנוביצה אחרי שהומלץ להם רבות, ו\"אכן היה מושלם\". שעה ועשרים ביובלים ובאגם עצמו, עם טבילה במים.\nהשיט עם איבונה — פרטי הקשר נמצאים אצלנו.\nשם גם קנו את המנוי לכל שמורות הטבע, בביתן שבכניסה.\nשימו לב: זה יום שלם בכיוון אחר מבודווה, והוא מתחרה ביום החוף הרגוע של ה-4.10.","paidBy":"","place":"רייקה צ׳רנוביצה, כשעה מבודווה","planned":"","region":"","src":["fb"],"status":"idea","time":"09:00","title":"שיט באגם סקאדר עם איבונה","type":"activity"},"bud-sveti-stefan":{"actual":"","conf":"","cur":"EUR","day":"2026-10-04","endTime":"","link":"https://en.wikipedia.org/wiki/Sveti_Stefan","nights":"","notes":"האי עצמו הוא מלון פרטי ולא נכנסים — התמונה המוכרת היא מהתצפית שמעל הכביש.\nמהפוסט: הם אהבו את חופי בודווה הרבה יותר מחופי קוטור — רצועות חוף ארוכות, ים כיפי והרבה אטרקציות, מזכיר את אילת. הם עשו את חוף בצ׳יצ׳י (Bečići) ואת סווטי סטפן.\nיום אחרון מלא — נראה לי נכון להשאיר אותו רגוע: תצפית, חוף בצהריים ואריזה בערב.\nהים בתחילת אוקטובר עדיין נעים לשחייה.","paidBy":"","place":"כ-10 דקות מדרום לבודווה","planned":"","region":"","src":["claude","fb"],"status":"idea","time":"10:30","title":"תצפית סווטי סטפן וחוף בצ׳יצ׳י","type":"activity"},"car-hire":{"actual":"","conf":"Europcar Montenegro · Skoda Kodiaq 5+2","cur":"EUR","day":"2026-09-23","endTime":"","link":"","nights":"","notes":"הוזמן. איסוף יום ד׳ 23.9 ב-14:00 בשדה התעופה טיבט, החזרה יום ב׳ 5.10 ב-14:00 באותו מקום. 12 ימים. שעות הדלפק 08:00–20:00.\n\nשלושה דברים ששווה לשים לב אליהם:\n· שעת ההחזרה בחוזה היא 14:00 אבל הטיסה ב-14:55. זו לא שעת ההחזרה המעשית — צריך להחזיר עד בערך 12:40.\n· קודיאק 5+2: השורה השלישית קטנה, וכשהיא פתוחה כמעט ואין תא מטען. עם חמישה אנשים ומזוודות — לקפל אותה.\n· בהזמנה רשום נהג אחד בלבד. סך הנהיגה בטיול הוא בערך תשע שעות, מתוכן נסיעה אחת של שלוש וחצי.\n\nשווה לקרוא בחוזה מה נאמר על נסיעה בדרכי עפר — רלוונטי לעלייה לסיניאייבינה.","paidBy":"","place":"דלפק Europcar, שדה התעופה טיבט","planned":"","region":"","src":[],"status":"booked","time":"14:00","title":"רכב שכור — Europcar, סקודה קודיאק 5+2","type":"transfer"},"drive-1-airport-lipovo":{"actual":"","conf":"","cur":"EUR","day":"2026-09-23","endTime":"17:00","link":"","nights":"","notes":"הרכב מוזמן לאיסוף ב-14:00 בדלפק Europcar בטרמינל (שעות 08:00–20:00), עשר דקות אחרי הנחיתה. בפועל תגיעו לשם קצת אחרי וזה בסדר.\nהערכה, לא אומת — כ-130 ק״מ, בערך שעתיים עד שעתיים וחצי.\nמהפוסט, וזה הדבר הכי שימושי שלו: מפודגוריצה לקולשין לנסוע ב-E80 ולא ב-A1. הדרך מאוד יפה, הרים גבוהים, מנהרות חצובות בסלע ונהר המוראצ׳ה ברקע.\nגם מהפוסט: היציאה משדה התעופה בטיבט היתה מהירה אצלם.\nהצ׳ק-אין בליפובו אחרי 15:00, אז אין לחץ.","paidBy":"","place":"דרך פודגוריצה וכביש E80","planned":"","src":["claude","fb"],"status":"idea","time":"14:45","title":"משדה התעופה טיבט לגורנייה ליפובו","type":"drive"},"drive-2-lipovo-zabljak":{"actual":"","conf":"","cur":"EUR","day":"2026-09-27","endTime":"12:30","link":"","nights":"","notes":"הערכה, לא אומת — כ-100 ק״מ, בערך שעתיים עד שעתיים וחצי בכביש הררי.\nצ׳ק-אאוט ב-10:00, צ׳ק-אין אחרי 14:00, כך שהיום הזה הוא הנסיעה. גשר קניון טארה נמצא בדרך ושווה עצירה.","paidBy":"","place":"דרך מויקובאץ וגשר טארה","planned":"","src":["claude"],"status":"idea","time":"10:00","title":"מגורנייה ליפובו לפושצ׳נסקי קראי","type":"drive"},"drive-3-zabljak-budva":{"actual":"","conf":"","cur":"EUR","day":"2026-10-01","endTime":"13:30","link":"","nights":"","notes":"הערכה, לא אומת — הנסיעה הארוכה של הטיול, כ-190 ק״מ ובערך שלוש שעות עד שלוש וחצי.\nצ׳ק-אאוט ב-10:00, צ׳ק-אין אחרי 15:00. שני מסלולים אפשריים; הכביש דרך שאבניק קצר יותר אבל איטי וצר. כדאי להחליט מראש ולא בבוקר עצמו.\nלהתייחס ליום הזה כיום נסיעה, לא כיום עם תוכניות.","paidBy":"","place":"דרך שאבניק וניקשיץ׳, או חזרה דרך קולאשין ופודגוריצה","planned":"","src":["claude"],"status":"idea","time":"10:00","title":"מפושצ׳נסקי קראי לבודווה","type":"drive"},"drive-4-budva-airport":{"actual":"","conf":"","cur":"EUR","day":"2026-10-05","endTime":"12:40","link":"","nights":"","notes":"קריטי: הרכב מוזמן להחזרה ב-14:00 אבל הטיסה ב-14:55. אל תתכננו לפי ה-14:00 שבחוזה — זו סתם שעת סיום השכירות, והחזרה בשעה הזו משאירה פחות משעה עד המראה.\nלוח זמנים שעובד: לצאת מבודווה ב-12:00, להחזיר את הרכב עד 12:40, להיות בטרמינל סביב 13:00.\nהנסיעה עצמה: כ-20 ק״מ, 25 עד 35 דקות, יותר אם יש פקקים בחוף.\nמהפוסט: הם הגיעו לטיבט שעתיים לפני הטיסה, לא היו תורים גדולים והצ׳ק-אין היה מהיר.\nהצ׳ק-אאוט מהדירה ב-10:00, אז יש כשעתיים למלא כשהמזוודות כבר ברכב.","paidBy":"","place":"כביש החוף דרך טיבט","planned":"","src":["claude","fb"],"status":"idea","time":"12:00","title":"מבודווה לשדה התעופה טיבט","type":"drive"},"dur-black-lake":{"actual":"","conf":"","cur":"EUR","day":"2026-09-27","endTime":"","link":"https://nparkovi.me/parks/durmitor","nights":"","notes":"הסמל של דורמיטור, והדבר הנכון לעשות אחרי הנסיעה — קרוב, קל ולא דורש כוחות.\nמסלול מעגלי של כ-3.5 ק״מ סביב האגם, שטוח ומסומן, כשעה.\nמהפוסט: האגם השחור ואגם השטן (Zmijinje) מדהימים ביופים. אגם השטן קטן וקרוב, אפשר לשלב באותה יציאה.\nיש דמי כניסה לפארק — אם קניתם מנוי בביוגרדסקה, הוא אמור לכסות גם כאן.","paidBy":"","place":"כ-3 ק״מ מז׳אבליאק","planned":"","region":"","src":["claude","fb"],"status":"idea","time":"16:00","title":"האגם השחור ואגם השטן","type":"activity"},"dur-bobotov":{"actual":"","conf":"","cur":"EUR","day":"2026-09-30","endTime":"15:00","link":"https://en.wikipedia.org/wiki/Bobotov_Kuk","nights":"","notes":"הפסגה הגבוהה והמוכרת של דורמיטור. יום שלם — בערך 6 עד 8 שעות הלוך וחזור, עלייה רצינית.\nלא חייבים כולם — אפשר שחלק ו והשאר יעשו יום נינוח באגם או בז׳אבליאק.\nבתחילת אוקטובר יכול להיות קר מאוד למעלה ואפילו שלג מוקדם — לבדוק תחזית בבוקר.","paidBy":"","place":"מסיב דורמיטור","planned":"0","region":"","src":["claude"],"status":"idea","time":"07:00","title":"טיפוס לבובוטוב קוק — למי שרוצה","type":"activity"},"dur-curevac":{"actual":"","conf":"","cur":"EUR","day":"2026-09-29","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=%C4%86urevac%20viewpoint%2C%20%C5%BDabljak%2C%20Montenegro","nights":"","notes":"הליכה קצרה מהחניה לתצפית שנפתחת מעל עומק הקניון. מעט מאמץ, הרבה תמונה.\nמשתלב טוב עם טבעת דורמיטור באותו יום.","paidBy":"","place":"מזרחית לז׳אבליאק","planned":"0","region":"","src":["claude"],"status":"idea","time":"16:00","title":"תצפית צ׳ורבאץ על קניון טארה","type":"activity"},"dur-oro":{"actual":"","conf":"","cur":"EUR","day":"2026-09-28","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=O%27ro%20Restaurant%2C%20%C5%BDabljak%2C%20Montenegro","nights":"","notes":"מהפוסט: נחמדה וטעימה, אבל חלקם יצאו קצת רעבים מהמנה.\nהעצה הטובה יותר מהפוסט: בערב שאחרי הם אכלו אצל המארחים בצימר בחצי מחיר ועם הרבה יותר אוכל. שווה לשאול את המארחים בווילה סן פורסט אם הם מבשלים.","paidBy":"","place":"ז׳אבליאק","planned":"100","region":"","src":["fb"],"status":"idea","time":"19:30","title":"מסעדת O'ro, ז׳אבליאק","type":"food"},"dur-p14":{"actual":"","conf":"","cur":"EUR","day":"2026-09-30","endTime":"","link":"","nights":"","notes":"מהפוסט, במפורש: \"כביש P14, נופים מהממים, לא לוותר\". הוא מתחיל קרוב לז׳אבליאק — הצימר שלהם היה בתחילתו.\nשמתי ב-30.9 כחלופה לטיפוס לבובוטוב קוק — אם לא עולים לפסגה, זה יום נסיעה יפה.\nלא אימתתי את המסלול המדויק — שווה להסתכל במפה מול טבעת דורמיטור, יכול להיות שיש חפיפה.","paidBy":"","place":"מתחיל קרוב לז׳אבליאק","planned":"0","region":"","src":["fb"],"status":"idea","time":"10:00","title":"כביש P14 — נסיעת נוף","type":"activity"},"dur-rafting":{"actual":"","conf":"","cur":"EUR","day":"2026-09-28","endTime":"14:00","link":"https://www.tara-tour.com/en/","nights":"","notes":"מהפוסט, וזה משנה תמונה: הרפטינג בנהר הטארה הוא \"רגוע ביותר\". זה לא אקסטרים.\nטוב לדעת אם באתם בשביל אדרנלין — וטוב מאוד אם מישהו בחבורה מעדיף רגוע.\nשים לב: סוף ספטמבר הוא קצה העונה — מפלס המים נמוך יותר וחלק מהמפעילים כבר סוגרים. צריך לבדוק מראש מי עוד פעיל בתאריך הזה ולהזמין.","paidBy":"","place":"קניון טארה","planned":"","region":"","src":["claude","fb"],"status":"idea","time":"09:00","title":"רפטינג בקניון טארה","type":"activity"},"dur-ring":{"actual":"","conf":"","cur":"EUR","day":"2026-09-29","endTime":"15:00","link":"https://www.google.com/maps/search/?api=1&query=Durmitor%20Ring%20road%2C%20%C5%BDabljak%2C%20Montenegro","nights":"","notes":"לולאה נופית של כ-80 ק״מ סביב מסיב דורמיטור, עם עצירות תצפית ומסלולים קצרים לאורך הדרך.\nיום שבו רוב המאמץ הוא נהיגה — טוב אחרי יום רפטינג.\nהכביש צר במקומות — בדיקה של מזג האוויר לפני שיוצאים.","paidBy":"","place":"לולאה מז׳אבליאק","planned":"","region":"","src":["claude"],"status":"idea","time":"09:30","title":"טבעת דורמיטור — נסיעת נוף","type":"activity"},"dur-zipline":{"actual":"","conf":"","cur":"EUR","day":"2026-09-28","endTime":"","link":"https://www.tarasportrafting.com/zip-line","nights":"","notes":"מהפוסט: האומגה הצהובה שליד הרפטינג — כיפית, לא מפחידה, ו\"הדקה היקרה ביותר ששילמתי עליה בטיול\".\nשהיא לא מפחידה זה דווקא יתרון עם הצעיר שבחבורה.\nגם מהפוסט: השיפוצים בגשר לא ממש הפריעו, אבל האומגה בצד השני והם הלכו כמה דקות ברגל.\nמשתלב עם הרפטינג באותו יום.","paidBy":"","place":"גשר דורד׳ביצה טארה","planned":"","region":"","src":["claude","fb"],"status":"idea","time":"15:30","title":"האומגה הצהובה ליד גשר טארה","type":"activity"},"fly-home":{"actual":"","conf":"","cur":"ILS","day":"2026-10-05","endTime":"18:45","link":"","nights":"","notes":"אל על LY 5468, מופעלת על ידי אל על עבור סאן דור. שעתיים ו-50 דקות ללא עצירה.\nהמראה מטיבט ב-14:55, נחיתה בבן גוריון טרמינל 3 ב-18:45.\nטיבט הוא שדה קטן עם תורים ארוכים בשעות עומס — כדאי להגיע שעתיים מראש. המרחק ממנו לקוטור כ-10 דקות ומבודווה כ-25 דקות.","paidBy":"","place":"טיבט (TIV) · בן גוריון טרמינל 3","planned":"","status":"booked","time":"14:55","title":"טיסה חזור: טיבט–תל אביב · LY 5468","type":"flight"},"fly-out":{"actual":"","conf":"","cur":"ILS","day":"2026-09-23","endTime":"13:50","link":"","nights":"","notes":"אל על LY 5467, מופעלת על ידי Klasjet עבור סאן דור. 3 שעות ללא עצירה.\nהמראה מבן גוריון טרמינל 3 ב-11:50, נחיתה בטיבט ב-13:50.\nמזוודה אחת לכל אחד — כדאי לוודא מול אל על את משקל הכבודה המותר.\nאין ארוחה אמיתית בקו הזה, שווה לקחת אוכל.","paidBy":"","place":"בן גוריון טרמינל 3 · טיבט (TIV)","planned":"","status":"booked","time":"11:50","title":"טיסה הלוך: תל אביב–טיבט · LY 5467","type":"flight"},"lip-bikes":{"actual":"","conf":"","cur":"EUR","day":"2026-09-24","endTime":"","link":"","nights":"","notes":"מההמלצות של אנה.\nחברים שלה מ-Go Green Bike מביאים אופני הרים חשמליים ישירות עד הבית, ולדבריה המחירים הגיוניים.\nלפנות לאנה כדי שתעביר את פרטי הקשר שלהם. אין עדיין מחיר.","paidBy":"","place":"משלוח עד הבית","planned":"","region":"","src":["anna"],"status":"idea","time":"","title":"אופני הרים חשמליים — לתאם מראש","type":"note"},"lip-biogradska":{"actual":"","conf":"","cur":"EUR","day":"2026-09-26","endTime":"","link":"https://nparkovi.me/parks/biogradska%20gora","nights":"","notes":"מההמלצות של אנה, וגם אחד הדברים החזקים בפוסט.\nטיול יום קל — אפשר להקיף את האגם ברגל בלי טיול הרים קשה. השביל מוצל. בפוסט גם טבלו באגם, אבל הם היו בקיץ; בסוף ספטמבר המים יהיו קרים.\nעדכון חשוב: בפוסט כתוב שהמנוי לשמורות לא נמכר באינטרנט. זה כבר לא נכון — באתר הפארקים הלאומיים יש חנות כרטיסים מקוונת, כולל כרטיס שנתי לכל הפארקים:\nnparkovi.me/sections/1/online-ulaznice\nשווה לחשב: אתם נכנסים לביוגרדסקה, לדורמיטור (האגם השחור), ואולי גם ללובצ׳ן ולסקאדר — ארבעה פארקים. כרטיס שנתי אחד עשוי לצאת זול יותר מארבע כניסות נפרדות לחמישה אנשים.\nועוד מהאתר: ילדים עד גיל 15 פטורים מתשלום כניסה, כך שהבת הצעירה לא אמורה לשלם.","paidBy":"","place":"צפונית לקולשין","planned":"","region":"","src":["anna","fb"],"status":"idea","time":"13:30","title":"פארק לאומי ביוגרדסקה גורה ואגם ביוגרד","type":"activity"},"lip-dinner":{"actual":"","conf":"","cur":"EUR","day":"2026-09-25","endTime":"","link":"","nights":"","notes":"מההמלצות של אנה. seosko domaćinstvo — משק כפרי מונטנגרי מסורתי, לא מסעדה.\nכמעט הכול מהתוצרת של המשפחה עצמה. כ-20 אירו לאדם כולל בירה או יין — כ-100 אירו לחמישה.\nצריך לתאם מראש דרך אנה, ולהגיד לה אם אוכלים חזיר או לא כדי שידעו מה להכין.","paidBy":"","place":"כ-15 דקות הליכה בעלייה מהבית","planned":"100","region":"","src":["anna"],"status":"idea","time":"19:00","title":"ארוחת ערב כפרית אצל המשפחה מלמעלה","type":"food"},"lip-gondola":{"actual":"","conf":"","cur":"EUR","day":"2026-09-26","endTime":"","link":"https://kolasin.me/en/ski-resort-kolasin-1600/","nights":"","notes":"מההמלצות של אנה, ומופיע גם בפוסט.\nרכבל שעולה להרים בלי טיפוס. למעלה אפשר פשוט ליהנות מהנוף או לעשות אחת ההליכות הקלות מסביב, ויש גם אוכל ושתייה.\nאנה אומרת שזה עובד טוב עם מתבגרים. הפוסט מסכם את זה כ״נוף יפה וחוויה נחמדה״ — נחמד ולא שיא הטיול.\nשווה רק ביום בהיר — לשמור אותו גמיש לפי מזג האוויר.","paidBy":"","place":"קולשין","planned":"","region":"","src":["anna","fb"],"status":"idea","time":"10:00","title":"רכבל קולשין 1600","type":"activity"},"lip-groceries":{"actual":"","conf":"","cur":"EUR","day":"2026-09-24","endTime":"","link":"","nights":"","notes":"הבית בכפר הררי והמטבח שלכם. שווה למלא אותו ביום הראשון המלא.\nהמטבח המונטנגרי מאוד בשרי — הפוסט מציין שעגבנייה מגיעה עם כל מנה — וזה האזור הכי מרוחק בטיול. עדיף שיהיה אוכל בבית ולא להסתמך רק על מסעדות.\nקולשין היא העיר הקרובה, כחצי שעה נסיעה.","paidBy":"","place":"קולשין","planned":"","region":"","src":["claude"],"status":"idea","time":"10:30","title":"קניות בקולשין למטבח בבית","type":"note"},"lip-house":{"actual":"","conf":"","cur":"EUR","day":"2026-09-23","endTime":"","link":"","nights":"","notes":"מהמלצות של אנה, בעלת הבית.\nבבית יש כמה מפות מסלולים, מהליכות קצרות מאוד ועד טיולים גדולים.\nאיאן, בן הזוג של אנה, יהיה באולפן למטה בחלק מהשהות ויכול להמליץ על מסלול לפי כמה שבאמת בא לנו.\nיש גם כדורעף, בדמינטון ומשחקי חצר נוספים, הכול פתוח לשימוש.\nאנה ממליצה לא לתכנן הכול מראש — להגיע, להסתכל על המפות ולהחליט במקום.","paidBy":"","place":"בבית","planned":"0","region":"","src":["anna"],"status":"idea","time":"","title":"מפות מסלולים בבית ומשחקי חצר","type":"note"},"lip-kolasin-town":{"actual":"","conf":"","cur":"EUR","day":"2026-09-26","endTime":"","link":"https://www.google.com/maps/search/?api=1&query=Kola%C5%A1in%20town%20centre%2C%20Montenegro","nights":"","notes":"מהפוסט: בקולשין יש טיילת קטנה וחמודה עם שלל בתי קפה.\nשתי מסעדות שהם אהבו שם:\n· Sherpas Restaurant & Modern Mountain — מודרנית עם מבחר מגוון. מבין השתיים, ההימור הסביר יותר לצמחונים.\n· Vodenica — מסעדת בשרים טובה.\nהערכתי 100 אירו לחמישה לפי ה-20 אירו לאדם שבפוסט.","paidBy":"","place":"מרכז קולשין","planned":"100","region":"","src":["fb"],"status":"idea","time":"18:30","title":"ערב בקולשין — הטיילת והמסעדות","type":"food"},"lip-mill":{"actual":"","conf":"","cur":"EUR","day":"2026-09-24","endTime":"","link":"","nights":"","notes":"מההמלצות של אנה.\nממשיכים במעלה הנהר ומגיעים לטחנת מים ישנה. לא שביל מסומן, אבל קל ללכת לאורך הנהר. הרפתקה קצרה ונחמדה.","paidBy":"","place":"לאורך הנהר מהבית","planned":"0","region":"","src":["anna"],"status":"idea","time":"11:30","title":"טחנת המים הישנה במעלה הנהר","type":"activity"},"lip-moraca":{"actual":"","conf":"","cur":"EUR","day":"2026-09-24","endTime":"","link":"https://en.wikipedia.org/wiki/Mora%C4%8Da_(monastery)","nights":"","notes":"מנזר מהמאה ה-13 עם פרסקאות מרשימות, יושב על כביש E80 — הכביש היפה שהפוסט ממליץ עליו בין פודגוריצה לקולשין.\nהעברתי אותו מיום ההגעה — אתם נוחתים מאוחר וצריכים מנוחה. מליפובו זו נסיעה של כחצי שעה דרומה, אז זו יציאה קצרה אחר הצהריים.","paidBy":"","place":"על הכביש מפודגוריצה לקולשין","planned":"","region":"","src":["claude"],"status":"idea","time":"15:00","title":"מנזר מוראצ׳ה","type":"activity"},"lip-restday":{"actual":"","conf":"","cur":"EUR","day":"2026-09-23","endTime":"","link":"","nights":"","notes":"נוחתים 13:50, אוספים רכב ומזוודות ונוסעים כשעתיים להרים. סביר שתגיעו סביב 17:00 ותרצו רק לפרוק.\nהעברתי את מנזר מוראצ׳ה ואת ענייני האופניים ל-24.9 כדי להשאיר את היום הזה ריק.\nדברים מהפוסט ששווה לסדר מראש או בדרך:\n· eSIM — Airalo עבד להם מצוין, וגם גוגל מפס ו-Waze.\n· מזומן. במסעדות שילמו בעיקר באשראי, אבל באטרקציות זה היה כמעט חצי-חצי, ובשלוש מתוך ארבע לינות שילמו במזומן. האטרקציות שם לא זולות — להביא מספיק.\n· ארוחה במסעדה יצאה להם סביב 20 אירו לאדם.","paidBy":"","place":"הבית בליפובו","planned":"0","region":"","src":["claude"],"status":"idea","time":"","title":"יום הגעה — בלי תוכניות","type":"note"},"lip-river":{"actual":"","conf":"","cur":"EUR","day":"2026-09-24","endTime":"","link":"","nights":"","notes":"מההמלצות של אנה.\nישירות מהבית יורדים ברגל לנהר. בנו שם בריכה טבעית קטנה לטבילה קרה, למי שאמיץ מספיק.","paidBy":"","place":"בהליכה מהבית","planned":"0","region":"","src":["anna"],"status":"idea","time":"10:00","title":"ירידה לנהר ובריכת הטבילה הקרה","type":"activity"},"lip-sinjajevina":{"actual":"","conf":"","cur":"EUR","day":"2026-09-25","endTime":"","link":"https://en.wikipedia.org/wiki/Sinjajevina","nights":"","notes":"המקום האהוב על אנה באזור.\nכ-8 ק״מ במעלה ההר מהבית בדרך עפר. למעלה נפתחת רמה עם נופים פתוחים ענקיים — אנה מתארת את זה כמו הערבות של מונגוליה.\nעכשיו כשהרכב מוזמן — שווה לבדוק: חוזי השכרה במונטנגרו לפעמים אוסרים נסיעה בכבישים לא סלולים, והנזק לא מכוסה שם. לקרוא את התנאים של Europcar לפני שעולים.\nאם זה בעייתי — אפשר לעלות ברגל (תלול), או לשאול את אנה ואיאן מה מצב הדרך בפועל.","paidBy":"","place":"כ-8 ק״מ במעלה העמק מהבית","planned":"0","region":"","src":["anna"],"status":"idea","time":"09:00","title":"רמת סיניאייבינה","type":"activity"},"stay-budva":{"actual":"","conf":"","cur":"EUR","day":"2026-10-01","endTime":"","link":"","nights":4,"notes":"צ׳ק-אין אחרי 15:00 · צ׳ק-אאוט ביום ב׳, 5 באוקטובר עד 10:00.\nהצ׳ק-אאוט ב-10:00 ביום הטיסה והטיסה ב-14:55 — טיבט במרחק כ-25 דקות, אז נשאר חלון למלא או מזוודות לאחסן.\nהכתובת המלאה נמצאת בהזמנה.","paidBy":"","place":"קומושבינה, וידיקובאץ, בודווה","planned":"","region":"בודווה","status":"booked","time":"15:00","title":"דירה בבודווה","type":"stay"},"stay-lipovo":{"actual":"","conf":"","cur":"EUR","day":"2026-09-23","endTime":"","link":"","nights":4,"notes":"צ׳ק-אין אחרי 15:00 · צ׳ק-אאוט ביום א׳, 27 בספטמבר עד 10:00.\nכל הנכס, באירוח של Anna. כפר הררי במרכז המדינה, רחוק מהחוף — העיר הקרובה היא קולשין.\nאיאן, בן הזוג של אנה, ישהה חלק מהזמן באולפן נפרד בקומה למטה ויטפל בגינה. הבית והפרטיות שלנו, והוא גם כתובת להמלצות ולעזרה.\nבבית יש מפות מסלולים, כדורעף, בדמינטון ומשחקי חצר נוספים — הכול פתוח לשימוש.\nהכתובת המלאה נמצאת בהזמנה.","paidBy":"","place":"גורנייה ליפובו, ליד קולאשין","planned":"","region":"קולשין","status":"booked","time":"15:00","title":"Fireside Lodge","type":"stay"},"stay-zabljak":{"actual":"","conf":"","cur":"EUR","day":"2026-09-27","endTime":"","link":"","nights":4,"notes":"צ׳ק-אין אחרי 14:00 · צ׳ק-אאוט ביום ה׳, 1 באוקטובר עד 10:00.\nבתוך אזור דורמיטור — זו כתובת של כפר ולא של העיירה ז׳אבליאק, אז כדאי לבדוק אם צריך לנסוע פנימה בשביל אוכל.\nהכתובת המלאה נמצאת בהזמנה.","paidBy":"","place":"פושצ׳נסקי קראי, ליד ז׳אבליאק (דורמיטור)","planned":"","region":"דורמיטור","status":"booked","time":"14:00","title":"Vila San Forest","type":"stay"}},"settings":{"rate":4}}</script>
+
+<script id="app">
+(function(){
+  "use strict";
+  try{ document.documentElement.setAttribute("dir","rtl"); document.documentElement.setAttribute("lang","he"); }catch(e){}
+
+  /* ============ trip constants ============ */
+  const START = "2026-09-23", END = "2026-10-05";
+  const PEOPLE = ["משותף"];
+  const TYPES = {
+    flight:   {lane:"move", label:"טיסה"},
+    drive:    {lane:"move", label:"נסיעה"},
+    ferry:    {lane:"move", label:"מעבורת"},
+    transfer: {lane:"move", label:"העברה"},
+    stay:     {lane:"stay", label:"לינה"},
+    activity: {lane:"do",   label:"פעילות"},
+    food:     {lane:"do",   label:"אוכל"},
+    note:     {lane:"do",   label:"לסדר"}
+  };
+  const STATUSES = ["idea","booked","done","skipped"];
+  const SRC_KEYS = ["anna","fb","claude"];
+  const SRC = {
+    anna:   {label:"אנה", full:"אנה, המארחת בליפובו"},
+    fb:     {label:"FB",  full:"מהפוסט בפייסבוק"},
+    claude: {label:"Claude", full:"הצעה של Claude"}
+  };
+  const ST_HE = {idea:"רעיון", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
+
+  /* ============ date helpers ============ */
+  function iso(d){return d.toISOString().slice(0,10);}
+  function parse(s){const p=s.split("-").map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2]));}
+  function addDays(s,n){const d=parse(s);d.setUTCDate(d.getUTCDate()+n);return iso(d);}
+  const DAYS=(function(){const out=[];let c=START;while(c<=END){out.push(c);c=addDays(c,1);}return out;})();
+  const NIGHTS=DAYS.slice(0,-1);
+  const DOW=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+  const MON=["בינואר","בפברואר","במרץ","באפריל","במאי","ביוני","ביולי","באוגוסט","בספט׳","באוק׳","בנוב׳","בדצמ׳"];
+  function dow(s){return DOW[parse(s).getUTCDay()];}
+  function dnum(s){return parse(s).getUTCDate();}
+  function dmon(s){return MON[parse(s).getUTCMonth()];}
+  function shortDate(s){return dnum(s)+" "+dmon(s);}
+  function longDate(s){return "יום "+dow(s)+", "+dnum(s)+" "+dmon(s);}
+  function today(){return iso(new Date());}
+  function nightWord(n){return n===1?"לילה":"לילות";}
+
+  /* ============ state ============ */
+  const state = {view:"trip", tripMode:"bases", openBase:null, day:null, items:new Map(), settings:{rate:4.0}, editing:null};
+  state.day = (today()>=START && today()<=END) ? today() : START;
+  let ART=null, canEdit=false;
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+  function list(){
+    return Array.from(state.items.values()).sort(function(a,b){
+      if(a.day!==b.day) return a.day<b.day?-1:1;
+      const ta=a.time||"99:99", tb=b.time||"99:99";
+      if(ta!==tb) return ta<tb?-1:1;
+      return (a.title||"")<(b.title||"")?-1:1;
+    });
+  }
+  function lane(it){const t=TYPES[it.type]; return t?t.lane:"do";}
+  function stays(){return list().filter(function(i){return i.type==="stay" && i.status!=="skipped";});}
+  function stayOn(night){
+    const s=stays();
+    for(let i=0;i<s.length;i++){
+      const n=Math.max(1, Number(s[i].nights)||1);
+      if(night>=s[i].day && night<addDays(s[i].day,n)) return s[i];
+    }
+    return null;
+  }
+  function itemsOn(d){return list().filter(function(i){return i.day===d && i.type!=="stay";});}
+
+  /* ============ money ============ */
+  function rate(){const r=Number(state.settings.rate); return r>0?r:4;}
+  function toEur(amt,cur){const a=Number(amt); if(!isFinite(a)) return 0; return cur==="ILS"? a/rate() : a;}
+  function eur(n){return "€"+Math.round(n).toLocaleString("en-US");}
+  function has(v){return !(v===null||v===undefined||v==="");}
+  function money(){
+    let planned=0, paid=0, missing=0; const byPayer={};
+    list().forEach(function(i){
+      if(i.status==="skipped") return;
+      const p=has(i.planned)? toEur(i.planned,i.cur) : null;
+      const a=has(i.actual)?  toEur(i.actual,i.cur)  : null;
+      if(p===null && a===null) missing++;
+      planned += (p===null? (a||0) : p);
+      if(a!==null){paid+=a; byPayer[i.paidBy||"משותף"]=(byPayer[i.paidBy||"משותף"]||0)+a;}
+    });
+    return {planned:planned, paid:paid, missing:missing, byPayer:byPayer, outstanding:Math.max(0,planned-paid)};
+  }
+
+  /* ============ gauges ============ */
+  function renderGauges(){
+    const covered=NIGHTS.filter(function(n){const s=stayOn(n); return s && s.status!=="idea";}).length;
+    const planned=DAYS.filter(function(d){return itemsOn(d).some(function(i){return lane(i)==="do";});}).length;
+    const m=money(), t=today();
+    const bar=NIGHTS.map(function(n){
+      const s=stayOn(n);
+      return '<i class="'+(s&&s.status!=="idea"?"on":"")+(n<t?" past":"")+'"></i>';
+    }).join("");
+    document.getElementById("gauges").innerHTML =
+      '<div class="gauge"><div class="g-label">מיטות</div><div class="g-val">'+covered+' / '+NIGHTS.length+'</div>'+
+        '<div class="nightbar">'+bar+'</div><div class="g-sub">לילות עם מקום לישון</div></div>'+
+      '<div class="gauge"><div class="g-label">ימים מתוכננים</div><div class="g-val">'+planned+' / '+DAYS.length+'</div>'+
+        '<div class="g-sub">ימים עם משהו לעשות</div></div>'+
+      '<div class="gauge"><div class="g-label">כסף</div><div class="g-val">'+eur(m.planned)+'</div>'+
+        '<div class="g-sub">'+eur(m.paid)+' שולם'+(m.missing?' · '+m.missing+' בלי מחיר':'')+'</div></div>';
+  }
+
+  /* ============ items ============ */
+  function srcList(it){
+    const s=it.src;
+    if(Array.isArray(s)) return s.filter(function(k){return SRC[k];});
+    if(typeof s==="string" && s) return s.split(",").map(function(x){return x.trim();}).filter(function(k){return SRC[k];});
+    return [];
+  }
+  function srcPills(it){
+    const l=srcList(it);
+    if(!l.length) return "";
+    return '<span class="srcs">'+SRC_KEYS.filter(function(k){return l.indexOf(k)>-1;}).map(function(k){
+      return '<span class="pill '+k+'" title="'+esc(SRC[k].full)+'">'+esc(SRC[k].label)+'</span>';
+    }).join("")+'</span>';
+  }
+  function costLabel(it){
+    if(!has(it.actual) && !has(it.planned)) return '<span class="i-cost none">אין מחיר</span>';
+    const a=has(it.actual);
+    return '<span class="i-cost">'+(a?"":"~")+eur(toEur(a?it.actual:it.planned, it.cur))+'</span>';
+  }
+  function itemRow(it){
+    const t=TYPES[it.type]||TYPES.note;
+    const when=it.time? esc(it.time)+(it.endTime?"–"+esc(it.endTime):"") : "";
+    const drag=dragOn()? ' draggable="true" data-drag="'+esc(it.id)+'"' : '';
+    return '<button class="item s-'+esc(it.status)+'"'+drag+' data-edit="'+esc(it.id)+'">'+
+      '<span class="i-time">'+when+'</span>'+
+      '<span class="i-body"><span class="i-title">'+esc(it.title||"ללא שם")+'</span>'+
+        '<span class="i-meta"><span class="kind">'+esc(t.label)+'</span>'+esc(it.place||"")+'</span></span>'+
+      '<span class="i-right">'+srcPills(it)+costLabel(it)+'<span class="chip '+esc(it.status)+'">'+esc(ST_HE[it.status]||it.status)+'</span></span>'+
+    '</button>';
+  }
+
+  /* ============ legs ============ */
+  function legs(){
+    const out=[]; let cur=null, n=0;
+    NIGHTS.forEach(function(night){
+      const s=stayOn(night), key=s? s.id : "gap";
+      if(!cur || cur.key!==key){ cur={key:key, stay:s, nights:[night]}; out.push(cur); }
+      else cur.nights.push(night);
+    });
+    out.forEach(function(l){ if(l.stay) l.n=++n; });
+    return out;
+  }
+  function baseAttr(l){ return ' data-base="'+(l.stay? ((l.n-1)%3)+1 : 0)+'"'; }
+  function dragOn(){ return canEdit && state.view==="trip" && state.tripMode==="bases" && state.openBase!==null; }
+  function baseLabel(l){
+    const r=l.stay && l.stay.region ? String(l.stay.region).trim() : "";
+    return 'בסיס '+l.n+(r? ' – '+esc(r) : '');
+  }
+  function legHeader(l){
+    const nn=l.nights.length;
+    const span=shortDate(l.nights[0])+' – '+shortDate(addDays(l.nights[nn-1],1));
+    const nights='<span class="n">'+nn+' '+nightWord(nn)+'</span>';
+    if(!l.stay){
+      return '<header class="leg empty"'+baseAttr(l)+'><div class="leg-n">אין בסיס</div>'+
+        '<div class="leg-main"><h3>עדיין אין איפה לישון</h3>'+
+        '<div class="leg-meta">'+esc(span)+' · '+nights+'</div></div>'+
+        '<div class="leg-right"><button class="btn" data-add="stay|'+l.nights[0]+'">הוספת מקום</button></div></header>';
+    }
+    const s=l.stay;
+    return '<header class="leg"'+baseAttr(l)+'><div class="leg-n">'+baseLabel(l)+'</div>'+
+      '<div class="leg-main"><h3><button data-edit="'+esc(s.id)+'">'+esc(s.title||"מקום ללא שם")+'</button></h3>'+
+      '<div class="leg-meta">'+esc(span)+' · '+nights+(s.place? ' · '+esc(s.place):'')+'</div></div>'+
+      '<div class="leg-right">'+costLabel(s)+'<span class="chip '+esc(s.status)+'">'+esc(ST_HE[s.status]||s.status)+'</span></div></header>';
+  }
+
+  function dayRow(d){
+    const t=today(), idx=DAYS.indexOf(d), isLast=(d===END);
+    const all=itemsOn(d);
+    const flights=all.filter(function(i){return i.type==="flight";});
+    const moves=all.filter(function(i){return lane(i)==="move" && i.type!=="flight";});
+    const dos=all.filter(function(i){return lane(i)==="do";});
+    const prevStay = idx>0? stayOn(DAYS[idx-1]) : null;
+    const curStay = isLast? null : stayOn(d);
+    const baseChanged = !!(prevStay && curStay && prevStay.id!==curStay.id);
+
+    let lanes="";
+    flights.forEach(function(f){
+      const when = (d===START) ? 'נחיתה '+(f.endTime||'—')
+                 : (d===END)   ? 'המראה '+(f.time||'—')
+                 : (f.time||'');
+      lanes += '<div class="railnote"><span>'+esc(f.title||"טיסה")+' — <b>'+esc(when)+'</b></span>'+
+               '<button data-goflights="1">פרטים</button></div>';
+    });
+    if(baseChanged && moves.length===0){
+      lanes += '<button class="gap" data-add="drive|'+d+'"><span>מחליפים בסיס — אין מעבר מתוכנן</span><span class="plus">+</span></button>';
+    }
+    moves.forEach(function(i){lanes+=itemRow(i);});
+    dos.forEach(function(i){lanes+=itemRow(i);});
+    if(dos.length===0){
+      lanes += '<button class="gap soft" data-add="activity|'+d+'"><span>אין תוכניות</span><span class="plus">+</span></button>';
+    }
+
+    let tag="";
+    if(d===START) tag='<span class="dtag">נחיתה</span>';
+    else if(isLast) tag='<span class="dtag">טיסה הביתה</span>';
+    else if(baseChanged) tag='<span class="dtag">מעבר בסיס</span>';
+
+    return '<section class="day'+(d===t?' is-today':'')+'" id="day-'+d+'" data-daydrop="'+d+'">'+
+      '<div class="datecol"><div><div class="dow">'+dow(d)+'</div><div class="dnum">'+dnum(d)+'</div>'+
+        '<div class="dmon">'+dmon(d)+'</div></div>'+tag+'</div>'+
+      '<div class="lanes">'+lanes+'</div></section>';
+  }
+
+  function legDays(l, i, total){ return l.nights.concat(i===total-1?[END]:[]); }
+  function doCount(d){ return itemsOn(d).filter(function(x){return lane(x)==="do";}).length; }
+
+  function tally(ls){
+    const made=ls.filter(function(l){return l.stay;}).length;
+    const bare=NIGHTS.filter(function(n){return !stayOn(n);}).length;
+    return '<p class="tally">'+(bare===0
+      ? made+' מקומות לינה על פני '+NIGHTS.length+' לילות — לכל לילה יש מיטה.'
+      : made+' מתוך 3 המקומות נוספו · '+bare+' '+nightWord(bare)+' עדיין בלי מקום לישון.')+'</p>';
+  }
+
+  function renderBaseCards(ls){
+    const cards=ls.map(function(l,i){
+      const days=legDays(l,i,ls.length), nn=l.nights.length;
+      const span=shortDate(l.nights[0])+' – '+shortDate(addDays(l.nights[nn-1],1));
+      const withPlans=days.filter(function(d){return doCount(d)>0;}).length;
+      const acts=days.reduce(function(a,d){return a+doCount(d);},0);
+      const strip=days.map(function(d){return '<i class="'+(doCount(d)?"on":"")+'"></i>';}).join("");
+      const plan = acts===0
+        ? '<div class="bc-plan warn">אין עדיין שום דבר מתוכנן</div>'
+        : '<div class="bc-plan">'+acts+' פריטים על פני '+withPlans+' מתוך '+days.length+' ימים</div>';
+      if(!l.stay){
+        return '<button class="basecard empty"'+baseAttr(l)+' data-openbase="'+i+'">'+
+          '<div class="bc-n">אין בסיס</div><h3>עדיין אין איפה לישון</h3>'+
+          '<div class="bc-meta">'+esc(span)+' · '+nn+' '+nightWord(nn)+'</div>'+
+          '<div class="bc-days">'+strip+'</div>'+plan+'</button>';
+      }
+      const s=l.stay;
+      return '<button class="basecard"'+baseAttr(l)+' data-openbase="'+i+'">'+
+        '<div class="bc-n">'+baseLabel(l)+'</div><h3>'+esc(s.title||"מקום ללא שם")+'</h3>'+
+        '<div class="bc-meta">'+esc(span)+' · '+nn+' '+nightWord(nn)+(s.place? '<br>'+esc(s.place):'')+'</div>'+
+        '<div class="bc-days">'+strip+'</div>'+plan+
+        '<div class="bc-foot">'+costLabel(s)+'<span class="chip '+esc(s.status)+'">'+esc(ST_HE[s.status]||s.status)+'</span></div>'+
+      '</button>';
+    }).join("");
+    return '<div class="basegrid">'+cards+'</div>'+tally(ls);
+  }
+
+  function renderOneBase(ls,i){
+    const l=ls[i], days=legDays(l,i,ls.length);
+    const nav='<div class="backrow"><button class="btn" data-openbase="none">כל הבסיסים</button>'+
+      (i>0? '<button class="btn" data-openbase="'+(i-1)+'">הבסיס הקודם</button>':'')+
+      (i<ls.length-1? '<button class="btn" data-openbase="'+(i+1)+'">הבסיס הבא</button>':'')+
+      '<span class="draghint">אפשר לגרור פריטים בין הימים</span></div>';
+    return nav+'<div class="spine">'+legHeader(l)+'<div class="legdays"'+baseAttr(l)+'>'+days.map(dayRow).join("")+'</div></div>';
+  }
+
+  function renderAllDays(ls){
+    let html="";
+    ls.forEach(function(l,i){
+      html += legHeader(l)+'<div class="legdays"'+baseAttr(l)+'>'+legDays(l,i,ls.length).map(dayRow).join("")+'</div>';
+    });
+    return '<div class="spine">'+html+'</div>'+tally(ls);
+  }
+
+  function renderTrip(){
+    const ls=legs();
+    const sub='<div class="subtabs" role="tablist">'+
+      '<button role="tab" data-tripmode="bases" aria-selected="'+(state.tripMode==="bases")+'">בסיסים</button>'+
+      '<button role="tab" data-tripmode="all" aria-selected="'+(state.tripMode==="all")+'">כל הימים</button></div>';
+    if(state.tripMode==="all") return sub+renderAllDays(ls);
+    if(state.openBase!==null && ls[state.openBase]) return sub+renderOneBase(ls,state.openBase);
+    state.openBase=null;
+    return sub+renderBaseCards(ls);
+  }
+
+  /* ============ day view ============ */
+  function fact(k,v,mono){
+    if(!v) return "";
+    return '<div class="fact"><div class="k">'+esc(k)+'</div><div class="v'+(mono?" mono":"")+'">'+esc(v)+'</div></div>';
+  }
+  function big(it){
+    const t=TYPES[it.type]||TYPES.note;
+    const when=it.time? '<span class="t">'+esc(it.time+(it.endTime?" – "+it.endTime:""))+'</span>' : "כל היום";
+    const cost=(function(){
+      if(!has(it.actual) && !has(it.planned)) return "עדיין לא תומחר";
+      if(has(it.actual)) return eur(toEur(it.actual,it.cur))+" שולם"+(it.paidBy?" · "+it.paidBy:"");
+      return "~"+eur(toEur(it.planned,it.cur))+" מתוכנן";
+    })();
+    const nn=Math.max(1,Number(it.nights)||1);
+    return '<article class="bigitem s-'+esc(it.status)+'">'+
+      '<div class="bi-top"><div><div class="bi-when">'+when+' · '+esc(t.label)+'</div>'+
+        '<div class="bi-title">'+esc(it.title||"ללא שם")+'</div></div>'+
+        '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+srcPills(it)+
+          '<span class="chip '+esc(it.status)+'">'+esc(ST_HE[it.status]||it.status)+'</span>'+
+          '<button class="btn" data-edit="'+esc(it.id)+'">עריכה</button></div></div>'+
+      '<div class="facts">'+
+        fact("איפה", it.place)+
+        (it.type==="stay"? fact("לילות", nn+" · צ׳ק-אאוט "+longDate(addDays(it.day,nn))) : "")+
+        fact("אישור", it.conf, true)+
+        fact("עלות", cost, true)+
+        (it.link? '<div class="fact"><div class="k">מידע</div><div class="v"><a href="'+esc(it.link)+'" target="_blank" rel="noopener">'+(it.link.indexOf("google.com/maps")>-1?"פתיחה במפות":"פתיחה באתר")+'</a></div></div>':"")+
+      '</div>'+
+      (it.notes? '<div class="bi-notes">'+esc(it.notes)+'</div>':'')+
+    '</article>';
+  }
+  function renderDay(){
+    const d=state.day, idx=DAYS.indexOf(d);
+    const s=stayOn(d), prevS=idx>0?stayOn(DAYS[idx-1]):null;
+    const items=itemsOn(d);
+    const head='<div class="dayhead"><div><h2>'+longDate(d)+'</h2>'+
+      '<div class="sub">יום '+(idx+1)+' מתוך '+DAYS.length+
+        (s? ' · לנים ב'+esc(s.title||"—") : ' · אין לינה') + '</div></div>'+
+      '<div class="daynav">'+
+        '<button class="btn" data-day="'+(idx>0?DAYS[idx-1]:"")+'"'+(idx===0?" disabled":"")+'>הקודם</button>'+
+        '<button class="btn" data-day="'+((today()>=START&&today()<=END)?today():START)+'">היום</button>'+
+        '<button class="btn" data-day="'+(idx<DAYS.length-1?DAYS[idx+1]:"")+'"'+(idx===DAYS.length-1?" disabled":"")+'>הבא</button>'+
+      '</div></div>';
+    let body="";
+    if(s && (s.day===d || (prevS&&prevS.id!==s.id))) body+=big(s);
+    else if(s) body+='<div class="cont" style="margin-top:12px">לנים ב'+esc(s.title||"—")+(s.place?' · '+esc(s.place):'')+'</div>';
+    if(items.length===0 && !s) body+='<p class="empty">עדיין אין כלום ביום הזה.</p>';
+    items.forEach(function(i){body+=big(i);});
+    if(items.length===0 && s) body+='<p class="empty">אין עוד כלום ביום הזה.</p>';
+    return head+body;
+  }
+
+  /* ============ flights ============ */
+  function renderFlights(){
+    const f=list().filter(function(i){return i.type==="flight";});
+    const head='<div class="dayhead"><div><h2>הלוך ושוב</h2>'+
+      '<div class="sub">תל אביב – טיבט · חמישה נוסעים · אל על / סאן דור</div></div>'+
+      '<div class="daynav"><button class="btn" data-add="flight|'+START+'">הוספת טיסה</button></div></div>';
+    if(f.length===0) return head+'<p class="empty">עדיין לא נרשמו טיסות.</p>';
+    return head+f.map(big).join("");
+  }
+
+  /* ============ money view ============ */
+  function renderMoney(){
+    const m=money(), per=m.planned/5;
+    const rows=list().filter(function(i){return i.status!=="skipped";}).map(function(i){
+      const t=TYPES[i.type]||TYPES.note;
+      return '<tr><td><button style="border:0;background:none;padding:0;text-align:start;font:inherit;cursor:pointer;font-weight:600" data-edit="'+esc(i.id)+'">'+
+        esc(i.title||"ללא שם")+'</button></td>'+
+        '<td>'+esc(shortDate(i.day))+'</td><td>'+esc(t.label)+'</td>'+
+        '<td><span class="chip '+esc(i.status)+'">'+esc(ST_HE[i.status]||i.status)+'</span></td>'+
+        '<td class="num">'+(has(i.planned)?eur(toEur(i.planned,i.cur)):"—")+'</td>'+
+        '<td class="num">'+(has(i.actual)?eur(toEur(i.actual,i.cur)):"—")+'</td>'+
+        '<td>'+esc(i.paidBy||"—")+'</td></tr>';
+    }).join("");
+    const payers=Object.keys(m.byPayer).sort();
+    const payerRows=payers.map(function(k){
+      return '<tr><td>'+esc(k)+'</td><td class="num">'+eur(m.byPayer[k])+'</td>'+
+        '<td class="num">'+eur(m.byPayer[k]-m.paid/5)+'</td></tr>';}).join("");
+
+    return '<div class="tiles">'+
+      '<div class="tile"><div class="k">סך מתוכנן</div><div class="v">'+eur(m.planned)+'</div><div class="s">כל מה שלא דילגנו עליו</div></div>'+
+      '<div class="tile"><div class="k">שולם בפועל</div><div class="v">'+eur(m.paid)+'</div><div class="s">נרשם עד עכשיו</div></div>'+
+      '<div class="tile"><div class="k">נשאר לשלם</div><div class="v">'+eur(m.outstanding)+'</div><div class="s">מתוכנן פחות ששולם</div></div>'+
+      '<div class="tile'+(m.missing?' warn':'')+'"><div class="k">בלי מחיר</div><div class="v">'+m.missing+'</div><div class="s">פריטים בלי מספר</div></div>'+
+      '<div class="tile"><div class="k">לאדם</div><div class="v">'+eur(per)+'</div><div class="s">מתוכנן חלקי 5</div></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:flex-end;margin-top:14px">'+
+      '<label class="rate">שער השקל <input id="rate" type="number" step="0.01" min="0.1" value="'+esc(rate())+'"> ₪ לאירו</label></div>'+
+    '<div class="tablewrap"><table><thead><tr><th>פריט</th><th>יום</th><th>סוג</th><th>סטטוס</th>'+
+      '<th class="num">מתוכנן</th><th class="num">שולם</th><th>מי שילם</th></tr></thead>'+
+      '<tbody>'+(rows||'<tr><td colspan="7" style="color:var(--muted)">עדיין אין תמחור.</td></tr>')+'</tbody>'+
+      '<tfoot><tr><td colspan="4">סה״כ</td><td class="num">'+eur(m.planned)+'</td><td class="num">'+eur(m.paid)+'</td><td></td></tr></tfoot>'+
+    '</table></div>'+
+    (payers.length? '<h3 class="sectitle">מי שילם כמה</h3>'+
+      '<div class="tablewrap"><table style="min-width:380px"><thead><tr><th>אדם</th><th class="num">שילם</th><th class="num">מול חלוקה שווה</th></tr></thead>'+
+      '<tbody>'+payerRows+'</tbody></table></div>' : '');
+  }
+
+  /* ============ drawer ============ */
+  function blank(type,day){
+    return {id:"", type:type||"activity", title:"", day:day||state.day, time:"", endTime:"",
+            nights:type==="stay"?1:"", region:"", src:[], place:"", status:"idea", planned:"", actual:"",
+            cur:"EUR", paidBy:"", conf:"", link:"", notes:""};
+  }
+  function openEditor(it){ state.editing=Object.assign(blank(),it); drawDrawer(); }
+  function closeEditor(){ state.editing=null; drawDrawer(); }
+
+  function drawDrawer(){
+    const host=document.getElementById("drawerhost");
+    if(!state.editing){host.innerHTML=""; return;}
+    const e=state.editing;
+    const opt=function(v,cur,label){return '<option value="'+esc(v)+'"'+(String(cur)===String(v)?" selected":"")+'>'+esc(label||v)+'</option>';};
+    host.innerHTML =
+    '<div class="scrim" data-close="1"></div><aside class="drawer" role="dialog" aria-label="עריכת פריט">'+
+      '<h3>'+(e.id?"עריכת פריט":"פריט חדש")+'</h3>'+
+      '<div class="form">'+
+        '<div class="f full"><label for="f-title">מה</label><input id="f-title" value="'+esc(e.title)+'" placeholder="דירה בעיר העתיקה של קוטור"></div>'+
+        '<div class="f"><label for="f-type">סוג</label><select id="f-type">'+
+          Object.keys(TYPES).map(function(k){return opt(k,e.type,TYPES[k].label);}).join("")+'</select></div>'+
+        '<div class="f"><label for="f-status">סטטוס</label><select id="f-status">'+
+          STATUSES.map(function(s){return opt(s,e.status,ST_HE[s]);}).join("")+'</select></div>'+
+        '<div class="f"><label for="f-day">יום</label><select id="f-day">'+
+          DAYS.map(function(d){return opt(d,e.day,longDate(d));}).join("")+'</select></div>'+
+        '<div class="f"><label for="f-nights">לילות (ללינה)</label><input id="f-nights" type="number" min="1" max="12" value="'+esc(e.nights)+'"></div>'+
+        '<div class="f"><label for="f-region">אזור הבסיס (ללינה)</label><input id="f-region" value="'+esc(e.region)+'" placeholder="קולשין"></div>'+
+        '<div class="f"><label for="f-time">מתחיל</label><input id="f-time" type="time" value="'+esc(e.time)+'"></div>'+
+        '<div class="f"><label for="f-endTime">מסתיים</label><input id="f-endTime" type="time" value="'+esc(e.endTime)+'"></div>'+
+        '<div class="f full"><label for="f-place">איפה</label><input id="f-place" value="'+esc(e.place)+'" placeholder="סטארי גראד, קוטור"></div>'+
+        '<div class="f"><label for="f-planned">עלות מתוכננת</label><input id="f-planned" type="number" step="1" value="'+esc(e.planned)+'"></div>'+
+        '<div class="f"><label for="f-cur">מטבע</label><select id="f-cur">'+opt("EUR",e.cur,"אירו (€)")+opt("ILS",e.cur,"שקל (₪)")+'</select></div>'+
+        '<div class="f"><label for="f-actual">שולם בפועל</label><input id="f-actual" type="number" step="1" value="'+esc(e.actual)+'"></div>'+
+        '<div class="f"><label for="f-paidBy">מי שילם</label><select id="f-paidBy">'+opt("",e.paidBy,"—")+
+          PEOPLE.map(function(p){return opt(p,e.paidBy);}).join("")+'</select></div>'+
+        '<div class="f full"><label>של מי הרעיון</label><div class="srcpick">'+
+          SRC_KEYS.map(function(k){
+            return '<label class="pickbox"><input type="checkbox" id="f-src-'+k+'"'+(srcList(e).indexOf(k)>-1?" checked":"")+'> '+esc(SRC[k].label)+'</label>';
+          }).join("")+'</div></div>'+
+        '<div class="f full"><label for="f-conf">אישור / אסמכתא</label><input id="f-conf" value="'+esc(e.conf)+'"></div>'+
+        '<div class="f full"><label for="f-link">קישור</label><input id="f-link" type="url" value="'+esc(e.link)+'" placeholder="https://"></div>'+
+        '<div class="f full"><label for="f-notes">הערות</label><textarea id="f-notes" placeholder="צ׳ק-אין אחרי 15:00, מפתח מבית הקפה ליד, מזומן בלבד">'+esc(e.notes)+'</textarea></div>'+
+      '</div>'+
+      '<div class="drawer-actions">'+
+        (canEdit? '<button class="btn btn-primary" id="save">שמירה</button>':'')+
+        '<button class="btn" data-close="1">'+(canEdit?"ביטול":"סגירה")+'</button>'+
+        (canEdit && e.id? '<button class="btn btn-danger" id="del">מחיקה</button>':'')+
+      '</div></aside>';
+    if(!canEdit){
+      Array.prototype.forEach.call(host.querySelectorAll("input,select,textarea"),function(n){n.disabled=true;});
+    } else {
+      const ti=document.getElementById("f-title"); if(ti) ti.focus();
+    }
+  }
+  function readForm(){
+    const g=function(id){const el=document.getElementById(id); return el? el.value : "";};
+    return {title:g("f-title").trim(), type:g("f-type"), status:g("f-status"), day:g("f-day"),
+      nights:g("f-nights"), region:g("f-region").trim(), time:g("f-time"), endTime:g("f-endTime"), place:g("f-place").trim(),
+      planned:g("f-planned"), cur:g("f-cur"), actual:g("f-actual"), paidBy:g("f-paidBy"),
+      conf:g("f-conf").trim(), link:g("f-link").trim(), notes:g("f-notes"),
+      src:SRC_KEYS.filter(function(k){const el=document.getElementById("f-src-"+k); return el&&el.checked;})};
+  }
+
+  /* ============ persistence — the page publishes new versions of itself ============ */
+  function newId(){return "it-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,6);}
+  function idleMsg(){ return canEdit ? "" : "תצוגה בלבד"; }
+  function flash(msg){
+    const el=document.getElementById("savestate"); if(!el) return;
+    el.textContent=msg;
+    if(msg) setTimeout(function(){ if(el.textContent===msg) el.textContent=idleMsg(); },2600);
+  }
+
+  function payload(){
+    const items={};
+    state.items.forEach(function(v,k){ const b=Object.assign({},v); delete b.id; items[k]=b; });
+    return {items:items, settings:state.settings};
+  }
+  /* Rebuild the whole document from its own pristine source — never from the rendered DOM. */
+  function buildDoc(){
+    const css=document.getElementById("appcss").textContent;
+    const js=document.getElementById("app").textContent;
+    const shell=document.getElementById("shell").innerHTML;
+    const data=JSON.stringify(payload()).split("<").join("\\u003c");
+    const close="<"+"/script>";
+    return '<!doctype html><html lang="he" dir="rtl"><head>'+
+      '<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'+
+      '<title>שנים עשר לילות במונטנגרו</title>'+
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Secular+One&display=swap">'+
+      '<style id="appcss">'+css+'</style></head><body>'+
+      '<template id="shell">'+shell+'<'+'/template><div id="root"></div>'+
+      '<script type="application/json" id="trip-data">'+data+close+
+      '<script id="app">'+js+close+
+      '</body></html>';
+  }
+
+  let publishing=false, publishAgain=false;
+  async function persist(){
+    if(!canEdit || !ART) return;
+    if(publishing){ publishAgain=true; return; }
+    publishing=true;
+    try{
+      await ART.publish(buildDoc());
+      flash("נשמר");
+    }catch(err){
+      const c=err && err.code;
+      if(c==="conflict") flash("מישהו אחר שמר לפניכם — הדף נטען מחדש");
+      else if(c==="not_granted" || c==="not_writer"){ canEdit=false; render(); flash("תצוגה בלבד"); }
+      else flash("לא הצלחתי לשמור");
+    }finally{
+      publishing=false;
+      if(publishAgain){ publishAgain=false; persist(); }
+    }
+  }
+
+  function saveItem(id,body){ state.items.set(id, Object.assign({id:id}, body)); render(); persist(); }
+  function removeItem(id){ state.items.delete(id); render(); persist(); }
+  function saveSettings(patch){ state.settings=Object.assign({},state.settings,patch); render(); persist(); }
+
+  /* ============ render ============ */
+  function render(){
+    renderGauges();
+    const stage=document.getElementById("stage");
+    if(state.view==="trip") stage.innerHTML=renderTrip();
+    else if(state.view==="flights") stage.innerHTML=renderFlights();
+    else if(state.view==="day") stage.innerHTML=renderDay();
+    else stage.innerHTML=renderMoney();
+    Array.prototype.forEach.call(document.querySelectorAll("#tabs button"),function(b){
+      b.setAttribute("aria-selected", b.dataset.view===state.view ? "true":"false");
+    });
+    const ab=document.getElementById("addbtn"); if(ab) ab.hidden=!canEdit;
+    if(!canEdit){ const r=document.getElementById("rate"); if(r) r.disabled=true; }
+  }
+
+  /* ============ events ============ */
+  document.addEventListener("click", function(ev){
+    const tab=ev.target.closest("#tabs button");
+    if(tab){ state.view=tab.dataset.view; render(); return; }
+    if(ev.target.closest("[data-goflights]")){ state.view="flights"; render(); window.scrollTo({top:0,behavior:"smooth"}); return; }
+    const tm=ev.target.closest("[data-tripmode]");
+    if(tm){ state.tripMode=tm.dataset.tripmode; state.openBase=null; render(); return; }
+    const ob=ev.target.closest("[data-openbase]");
+    if(ob){ const v=ob.dataset.openbase; state.openBase=(v==="none"?null:Number(v)); render(); window.scrollTo({top:0,behavior:"smooth"}); return; }
+    const dayBtn=ev.target.closest("[data-day]");
+    if(dayBtn && dayBtn.dataset.day){ state.day=dayBtn.dataset.day; render(); return; }
+    const edit=ev.target.closest("[data-edit]");
+    if(edit){
+      if(Date.now()-dropped<250) return;   /* swallow the click that follows a drop */
+      const it=state.items.get(edit.dataset.edit); if(it) openEditor(it); return;
+    }
+    const add=ev.target.closest("[data-add]");
+    if(add){ if(!canEdit) return; const p=add.dataset.add.split("|"); openEditor(blank(p[0],p[1])); return; }
+    if(ev.target.closest("#addbtn")){ if(!canEdit) return; openEditor(blank("activity", state.view==="day"?state.day:DAYS[0])); return; }
+    if(ev.target.closest("[data-close]")){ closeEditor(); return; }
+    if(ev.target.closest("#save")){
+      const body=readForm();
+      if(!body.title){ document.getElementById("f-title").focus(); return; }
+      const id=state.editing.id||newId();
+      closeEditor(); saveItem(id,body); return;
+    }
+    if(ev.target.closest("#del")){ const id=state.editing.id; closeEditor(); if(id) removeItem(id); return; }
+  });
+  /* ---- drag an item onto another day (single-base view) ---- */
+  let dragId=null, dropped=0;
+  function clearDrop(){
+    Array.prototype.forEach.call(document.querySelectorAll(".drop-on"),function(n){n.classList.remove("drop-on");});
+  }
+  function dayUnder(e){
+    const t=e.target;
+    return (t && t.closest) ? t.closest("[data-daydrop]") : null;
+  }
+  document.addEventListener("dragstart",function(e){
+    const el=(e.target && e.target.closest)? e.target.closest("[data-drag]") : null;
+    if(!el){ return; }
+    dragId=el.dataset.drag;
+    el.classList.add("dragging");
+    if(e.dataTransfer){
+      e.dataTransfer.effectAllowed="move";
+      try{ e.dataTransfer.setData("text/plain", dragId); }catch(_){}
+    }
+  });
+  document.addEventListener("dragend",function(){
+    dragId=null; clearDrop();
+    Array.prototype.forEach.call(document.querySelectorAll(".dragging"),function(n){n.classList.remove("dragging");});
+  });
+  document.addEventListener("dragover",function(e){
+    if(!dragId) return;
+    const day=dayUnder(e);
+    if(!day) return;
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect="move";
+    if(!day.classList.contains("drop-on")){ clearDrop(); day.classList.add("drop-on"); }
+  });
+  document.addEventListener("drop",function(e){
+    if(!dragId) return;
+    const day=dayUnder(e);
+    if(!day) return;
+    e.preventDefault();
+    const id=dragId, target=day.dataset.daydrop;
+    dragId=null; dropped=Date.now(); clearDrop();
+    const it=state.items.get(id);
+    if(it && it.day!==target){
+      const body=Object.assign({},it); delete body.id; body.day=target;
+      saveItem(id,body);
+      flash("הועבר ל־"+shortDate(target));
+    } else { render(); }
+  });
+
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && state.editing) closeEditor(); });
+  document.addEventListener("change",function(e){ if(e.target.id==="rate") saveSettings({rate:Number(e.target.value)||4}); });
+
+  /* ============ boot ============ */
+  document.getElementById("root").appendChild(
+    document.getElementById("shell").content.cloneNode(true));
+
+  try{
+    const el=document.getElementById("trip-data");
+    const d=el ? JSON.parse(el.textContent) : null;
+    if(d){
+      if(d.items) Object.keys(d.items).forEach(function(k){
+        state.items.set(k, Object.assign({id:k}, d.items[k]));
+      });
+      if(d.settings) state.settings=Object.assign({},state.settings,d.settings);
+    }
+  }catch(e){}
+
+  render();
+  document.getElementById("savestate").textContent="תצוגה בלבד";
+
+  (async function(){
+    try{
+      const c=window.claude;
+      const a=(c && typeof c.use==="function") ? await c.use("artifact") : null;
+      if(!a) return;
+      ART=a; canEdit=true; render();
+      document.getElementById("savestate").textContent="";
+    }catch(err){}
+  })();
+
+})();
+</script>
