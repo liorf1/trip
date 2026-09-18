@@ -241,6 +241,19 @@ a{color:var(--sea-deep)}
 .leg-meta .n{font-family:var(--label); color:var(--ink)}
 .leg-right{display:flex; gap:10px; align-items:center; white-space:nowrap}
 .legdays{display:flex; flex-direction:column}
+.mapwrap{margin-top:4px}
+.maphead{display:flex; align-items:flex-start; justify-content:space-between; gap:22px; margin-bottom:16px; flex-wrap:wrap}
+.maphead h2{font-family:var(--display); font-size:1.42rem; font-weight:500; margin:0 0 6px}
+.maphead p{margin:0; max-width:56ch; color:var(--ink-soft); font-size:.9rem; line-height:1.65}
+.maphead .btn{flex:none; text-decoration:none}
+.mapframe{
+  position:relative; width:100%; aspect-ratio:16/10; min-height:420px;
+  border-radius:var(--r-card); overflow:hidden;
+  border:1px solid var(--rule); background:var(--paper-card); box-shadow:var(--shadow-card);
+}
+.mapframe iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block}
+.mapnote{margin-top:11px; font-size:.82rem; color:var(--muted)}
+@media (max-width:640px){ .mapframe{aspect-ratio:3/4; min-height:0} .maphead .btn{width:100%; text-align:center} }
 .pickline{
   font-family:var(--label); font-size:.74rem; letter-spacing:.01em;
   color:var(--terracotta);
@@ -420,6 +433,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
       <button role="tab" data-view="day" aria-selected="false">יום</button>
       <button role="tab" data-view="money" aria-selected="false">כסף</button>
       <button role="tab" data-view="packing" aria-selected="false">אריזה</button>
+      <button role="tab" data-view="map" aria-selected="false">מפה</button>
     </div>
     <div class="bar-right">
       <span id="savestate" style="font-size:12.5px;color:var(--muted)"></span>
@@ -856,6 +870,23 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     PACKING.forEach(function(s){ s.i.forEach(function(x){ total++; if(state.pack[x]) done++; }); });
     return {done:done,total:total};
   }
+  const MAP_MID="1tPm8AVei6TM3MtQVC4rsnWlAfsrND7Y";
+  function renderMap(){
+    const embed="https://www.google.com/maps/d/embed?mid="+MAP_MID+"&hl=iw";
+    const open="https://www.google.com/maps/d/viewer?mid="+MAP_MID+"&hl=iw";
+    return '<div class="mapwrap">'+
+      '<div class="maphead">'+
+        '<div><h2>כל נקודות הטיול על מפה אחת</h2>'+
+        '<p>שלוש שכבות, אחת לכל בסיס — כחול קולאשין, ירוק דורמיטור, כתום בודווה. '+
+        'אפשר לכבות שכבה בתפריט שבתוך המפה, וכל סיכה פותחת את התאריך, השעה וההערות.</p></div>'+
+        '<a class="btn btn-primary" href="'+open+'" target="_blank" rel="noopener">פתיחה ב-Google Maps</a>'+
+      '</div>'+
+      '<div class="mapframe"><iframe src="'+embed+'" title="מפת הטיול" loading="lazy" '+
+        'referrerpolicy="no-referrer-when-downgrade"></iframe></div>'+
+      '<p class="mapnote">אם המפה לא נטענת כאן — הכפתור למעלה פותח אותה ישירות.</p>'+
+    '</div>';
+  }
+
   function renderPacking(){
     const c=packCounts();
     const cards=PACKING.map(function(s){
@@ -1042,6 +1073,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     else if(state.view==="flights") stage.innerHTML=renderFlights();
     else if(state.view==="day") stage.innerHTML=renderDay();
     else if(state.view==="packing") stage.innerHTML=renderPacking();
+    else if(state.view==="map") stage.innerHTML=renderMap();
     else stage.innerHTML=renderMoney();
     Array.prototype.forEach.call(document.querySelectorAll("#tabs button"),function(b){
       b.setAttribute("aria-selected", b.dataset.view===state.view ? "true":"false");
