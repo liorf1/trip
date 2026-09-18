@@ -400,6 +400,11 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
 .btn-danger{border-color:color-mix(in srgb, var(--terracotta) 40%, transparent); color:var(--terracotta); margin-inline-start:auto}
 
 @media (max-width:640px){
+  /* six tabs no longer fit a phone: let the row scroll instead of spilling off-screen */
+  .tabs{max-width:100%; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{padding:6px 13px; white-space:nowrap}
+  .viewbar{gap:10px}
   .day{grid-template-columns:1fr; gap:10px}
   .datecol{display:flex; align-items:baseline; gap:10px}
   .dnum{font-size:1.6rem}
