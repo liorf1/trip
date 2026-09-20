@@ -530,6 +530,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "bud-pavlova":"כשעה–שעה ורבע",
     "bud-skadar":"כשעה–שעה ורבע",
     "bud-sveti-stefan":"כ־15–25 דקות",
+    "drive-1-airport-lipovo":"כשעתיים–שעתיים וחצי",
     "drive-4-budva-airport":"כ־25–35 דקות"
   };
   const DISTANCES = {
@@ -565,6 +566,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "bud-pavlova":"כ־43 ק״מ",
     "bud-skadar":"כ־43 ק״מ",
     "bud-sveti-stefan":"כ־12 ק״מ",
+    "drive-1-airport-lipovo":"כ־130 ק״מ",
     "drive-4-budva-airport":"כ־20 ק״מ"
   };
   const MUST_ITEMS = {"dur-oro":true};
@@ -1026,20 +1028,35 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "stay-zabljak":[43.100522,19.109225], "drive3-vidikovac":[42.826858,18.898727],
     "drive3-zipline":[43.157334,18.846008], "drive3-ferrata":[43.154356,18.839815]
   };
+  const ROUTE_OVERRIDES = {
+    "drive-1-airport-lipovo":{
+      heading:"משדה התעופה לבסיס הראשון",
+      from:"שדה התעופה טיבט",
+      to:"Fireside Lodge",
+      origin:[42.411929,18.718211],
+      destination:[42.869364,19.419962],
+      waypoints:[[42.766171,19.390494]],
+      note:"דרך E80 · לא דרך A1"
+    }
+  };
   function itemBase(e){
     const d=e.day||START;
     return d<"2026-09-27" ? BASE_POINTS[0] : (d<"2026-10-01" ? BASE_POINTS[1] : BASE_POINTS[2]);
   }
   function drawerRouteHtml(e){
-    const base=itemBase(e), p=ITEM_POINTS[e.id];
+    const base=itemBase(e), p=ITEM_POINTS[e.id], route=ROUTE_OVERRIDES[e.id];
     const distance=distanceValue(e)||"לא צוין";
     const travel=travelValue(e)||"לא צוין";
     let link="";
-    if(p){
-      const origin=base.lat+","+base.lon, destination=p[0]+","+p[1];
-      link='<a class="drawer-route-link" href="https://www.google.com/maps/dir/?api=1&amp;origin='+origin+'&amp;destination='+destination+'&amp;travelmode=driving" target="_blank" rel="noopener">פתיחת מסלול הנהיגה ב‑Google Maps ↗</a>';
+    const origin=route?route.origin:[base.lat,base.lon], destination=route?route.destination:p;
+    if(destination){
+      const waypointPart=route&&route.waypoints&&route.waypoints.length
+        ? "&amp;waypoints="+route.waypoints.map(function(x){return x[0]+","+x[1];}).join("%7C") : "";
+      link='<a class="drawer-route-link" href="https://www.google.com/maps/dir/?api=1&amp;origin='+origin[0]+','+origin[1]+'&amp;destination='+destination[0]+','+destination[1]+waypointPart+'&amp;travelmode=driving" target="_blank" rel="noopener">פתיחת מסלול הנהיגה ב‑Google Maps ↗</a>';
     }
-    return '<section class="drawer-route"><h4>מסלול מהבסיס</h4><div class="drawer-route-base">'+esc(base.name)+'</div>'+
+    const heading=route?route.heading:"מסלול מהבסיס";
+    const routeName=route?(route.from+" → "+route.to+" · "+route.note):base.name;
+    return '<section class="drawer-route"><h4>'+esc(heading)+'</h4><div class="drawer-route-base">'+esc(routeName)+'</div>'+
       '<div class="drawer-route-stats"><span class="drawer-route-stat"><b>מרחק</b>'+esc(distance)+'</span>'+
       '<span class="drawer-route-stat"><b>זמן</b>'+esc(travel)+'</span></div>'+link+'</section>';
   }
