@@ -530,6 +530,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "bud-pavlova":"כשעה–שעה ורבע",
     "bud-skadar":"כשעה–שעה ורבע",
     "bud-sveti-stefan":"כ־15–25 דקות",
+    "bud-krimovica":"כ־15–20 דקות",
     "drive-1-airport-lipovo":"כשעתיים–שעתיים וחצי",
     "drive-4-budva-airport":"כ־25–35 דקות"
   };
@@ -566,8 +567,30 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "bud-pavlova":"כ־43 ק״מ",
     "bud-skadar":"כ־43 ק״מ",
     "bud-sveti-stefan":"כ־12 ק״מ",
+    "bud-krimovica":"כ־8–10 ק״מ",
     "drive-1-airport-lipovo":"כ־130 ק״מ",
     "drive-4-budva-airport":"כ־20 ק״מ"
+  };
+  const EXTRA_ITEMS = {
+    "bud-krimovica": {
+      type:"activity",
+      title:"חוף קרימוביצה (Krimovica)",
+      day:"2026-10-04",
+      time:"15:00",
+      endTime:"",
+      nights:"",
+      region:"",
+      src:[],
+      place:"Krimovica, ליד בודווה",
+      status:"idea",
+      planned:"",
+      actual:"",
+      cur:"EUR",
+      paidBy:"",
+      conf:"",
+      link:"https://www.google.com/maps/search/?api=1&query=Krimovica%20Beach%2C%20Montenegro",
+      notes:"אזור חוף שקט ליד הכפר קרימוביצה, מערבית לבודווה ובקרבת חופי Trsteno ו-Ploče."
+    }
   };
   const MUST_ITEMS = {"dur-oro":true};
   const ST_HE = {idea:"רעיון", decide:"הוחלט", must:"חובה", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
@@ -1010,7 +1033,8 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "bud-njegusi":[42.430214,18.826438], "bud-oldtown":[42.277844,18.838067],
     "bud-pavlova":[42.36274,19.05768], "bud-perast":[42.486768,18.688746],
     "bud-pomodorino":[42.425614,18.770641], "bud-skadar":[42.271806,19.123036],
-    "bud-sveti-stefan":[42.258129,18.895997], "car-hire":[42.411929,18.718211],
+    "bud-sveti-stefan":[42.258129,18.895997], "bud-krimovica":[42.28345,18.76808],
+    "car-hire":[42.411929,18.718211],
     "drive-1-airport-lipovo":[42.869364,19.419962], "drive-2-lipovo-zabljak":[43.100522,19.109225],
     "drive-3-zabljak-budva":[42.278727,18.830427], "drive-4-budva-airport":[42.411929,18.718211],
     "dur-black-lake":[43.146169,19.092133], "dur-bobotov":[43.127796,19.034222],
@@ -1456,6 +1480,9 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
       });
       if(d.settings) state.settings=Object.assign({},state.settings,d.settings);
     }
+    Object.keys(EXTRA_ITEMS).forEach(function(k){
+      if(!state.items.has(k)) state.items.set(k, Object.assign({id:k}, EXTRA_ITEMS[k]));
+    });
   }catch(e){}
 
   const savedStatuses=statusLoad();
