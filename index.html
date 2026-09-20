@@ -171,6 +171,11 @@ a{color:var(--sea-deep)}
 }
 .i-body{display:block; min-width:0}
 .i-title{display:block; font-size:.98rem; font-weight:500; line-height:1.4}
+.must-tag{
+  display:inline-flex; align-items:center; margin-inline-start:7px; padding:2px 8px;
+  border-radius:999px; background:var(--terracotta); color:var(--paper-card);
+  font-family:var(--label); font-size:.65rem; line-height:1.5; vertical-align:middle;
+}
 .i-meta{display:block; font-size:.82rem; color:var(--ink-soft); margin-top:1px; word-break:break-word}
 .i-meta .kind{font-family:var(--label); font-size:.7rem; color:var(--marker-ink); margin-inline-end:8px}
 .travel{display:inline-block; margin-inline-start:9px; color:var(--pine-deep); white-space:nowrap}
@@ -185,6 +190,8 @@ a{color:var(--sea-deep)}
 .chip.done{background:var(--pine-soft); color:var(--pine-deep)}
 .chip.idea{background:transparent; border:1px dashed var(--rule-2); color:var(--muted)}
 .chip.decide{background:var(--terracotta); color:var(--paper-card)}
+.status-select{border:0; cursor:pointer; appearance:auto; padding-inline:10px 7px}
+.status-select:focus-visible{outline:2px solid var(--sea); outline-offset:2px}
 .item.s-decide{
   background:var(--terracotta-soft); box-shadow:none;
   border:1px solid color-mix(in srgb, var(--terracotta) 35%, transparent);
@@ -547,7 +554,8 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "bud-sveti-stefan":"כ־12 ק״מ",
     "drive-4-budva-airport":"כ־20 ק״מ"
   };
-  const ST_HE = {idea:"רעיון", decide:"להחליט", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
+  const MUST_ITEMS = {"dur-oro":true};
+  const ST_HE = {idea:"רעיון", decide:"הוחלט", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
 
   /* ============ date helpers ============ */
   function iso(d){return d.toISOString().slice(0,10);}
@@ -654,6 +662,15 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   function distanceValue(it){
     return Object.prototype.hasOwnProperty.call(it,"distance") ? it.distance : (DISTANCES[it.id]||"");
   }
+  function mustTag(it){
+    return MUST_ITEMS[it.id] ? '<span class="must-tag">חובה</span>' : '';
+  }
+  function statusControl(it){
+    const opts=STATUSES.map(function(s){
+      return '<option value="'+esc(s)+'"'+(s===it.status?' selected':'')+'>'+esc(ST_HE[s]||s)+'</option>';
+    }).join("");
+    return '<select class="chip status-select '+esc(it.status)+'" data-status="'+esc(it.id)+'" aria-label="סטטוס של '+esc(it.title||"הפריט")+'">'+opts+'</select>';
+  }
   function travelLabel(it){
     const v=travelValue(it);
     return v ? '<span class="travel">🚗 מהבסיס: '+esc(v)+'</span>' : '';
@@ -667,9 +684,9 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
         (it.link.indexOf("google.com/maps")>-1?"מפה":"אתר")+'</a>' : '';
     return '<div class="item s-'+esc(it.status)+'" role="button" tabindex="0"'+drag+' data-edit="'+esc(it.id)+'">'+
       '<span class="i-time">'+when+'</span>'+
-      '<span class="i-body"><span class="i-title">'+esc(it.title||"ללא שם")+'</span>'+
+      '<span class="i-body"><span class="i-title">'+esc(it.title||"ללא שם")+mustTag(it)+'</span>'+
         '<span class="i-meta"><span class="kind">'+esc(t.label)+'</span>'+esc(it.place||"")+maplink+travelLabel(it)+'</span></span>'+
-      '<span class="i-right">'+srcPills(it)+costLabel(it)+'<span class="chip '+esc(it.status)+'">'+esc(ST_HE[it.status]||it.status)+'</span></span>'+
+      '<span class="i-right">'+srcPills(it)+costLabel(it)+statusControl(it)+'</span>'+
     '</div>';
   }
 
@@ -734,8 +751,8 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
       if(!shown && i.status==="decide"){
         shown=true;
         lanes += '<div class="pickline">'+(dec>1
-          ? dec+' אפשרויות מתחרות — לא כולן נכנסות, צריך לבחור'
-          : 'מחכה להחלטה')+'</div>';
+          ? dec+' פריטים בסטטוס הוחלט'
+          : 'סטטוס: הוחלט')+'</div>';
       }
       lanes+=itemRow(i);
     });
@@ -762,7 +779,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     const made=ls.filter(function(l){return l.stay;}).length;
     const bare=NIGHTS.filter(function(n){return !stayOn(n);}).length;
     const open=list().filter(function(x){return x.status==="decide";}).length;
-    const openLine = open? '<br><b class="tally-dec">'+open+' פריטים מסומנים להחלטה.</b> אלה לא משימות אלא אפשרויות שמתחרות זו בזו — חלקן לא ייכנסו לטיול, וזה בסדר.' : '';
+    const openLine = open? '<br><b class="tally-dec">'+open+' פריטים בסטטוס הוחלט.</b>' : '';
     return '<p class="tally">'+(bare===0
       ? made+' מקומות לינה על פני '+NIGHTS.length+' לילות — לכל לילה יש מיטה.'
       : made+' מתוך 3 המקומות נוספו · '+bare+' '+nightWord(bare)+' עדיין בלי מקום לישון.')+openLine+'</p>';
@@ -775,7 +792,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
       const withPlans=days.filter(function(d){return doCount(d)>0;}).length;
       const acts=days.reduce(function(a,d){return a+doCount(d);},0);
       const decs=days.reduce(function(a,d){return a+deCount(d);},0);
-      const decTag=decs? '<span class="bc-dec">'+decs+' להחלטה</span>' : '';
+      const decTag=decs? '<span class="bc-dec">'+decs+' הוחלטו</span>' : '';
       const strip=days.map(function(d){return '<i class="'+(doCount(d)?"on":"")+'"></i>';}).join("");
       const plan = acts===0
         ? '<div class="bc-plan warn">אין עדיין שום דבר מתוכנן</div>'
@@ -841,9 +858,9 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     const nn=Math.max(1,Number(it.nights)||1);
     return '<article class="bigitem s-'+esc(it.status)+'">'+
       '<div class="bi-top"><div><div class="bi-when">'+when+' · '+esc(t.label)+'</div>'+
-        '<div class="bi-title">'+esc(it.title||"ללא שם")+'</div></div>'+
+        '<div class="bi-title">'+esc(it.title||"ללא שם")+mustTag(it)+'</div></div>'+
         '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+srcPills(it)+
-          '<span class="chip '+esc(it.status)+'">'+esc(ST_HE[it.status]||it.status)+'</span>'+
+          statusControl(it)+
           '<button class="btn" data-edit="'+esc(it.id)+'">עריכה</button></div></div>'+
       '<div class="facts">'+
         fact("איפה", it.place)+
@@ -1033,7 +1050,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     return '<div class="scrim" data-close="1"></div><aside class="drawer read" role="dialog" aria-label="פרטי פריט">'+
       '<div class="rtop"><span class="chip '+esc(e.status)+'">'+esc(ST_HE[e.status]||e.status)+'</span>'+srcPills(e)+
         '<button class="btn rclose" data-close="1">סגירה</button></div>'+
-      '<h3>'+esc(e.title||"ללא שם")+'</h3>'+
+      '<h3>'+esc(e.title||"ללא שם")+mustTag(e)+'</h3>'+
       '<div class="rwhen"><span class="t">'+esc(when)+'</span> · '+esc(t.label)+'</div>'+
       (e.link? '<a class="rlink" href="'+esc(e.link)+'" target="_blank" rel="noopener">'+
                (e.link.indexOf("google.com/maps")>-1?"פתיחה במפות ↗":"פתיחה באתר ↗")+'</a>':'')+
@@ -1110,8 +1127,24 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   }
 
   /* ============ persistence — the page publishes new versions of itself ============ */
+  const STATUS_KEY="mne-status-v1";
+  function statusLoad(){ try{ return JSON.parse(localStorage.getItem(STATUS_KEY)||"{}")||{}; }catch(e){ return {}; } }
+  function statusSave(id,value){
+    try{
+      const saved=statusLoad(); saved[id]=value;
+      localStorage.setItem(STATUS_KEY,JSON.stringify(saved));
+    }catch(e){}
+  }
+  function setItemStatus(id,value){
+    if(STATUSES.indexOf(value)<0) return;
+    const it=state.items.get(id); if(!it) return;
+    const body=Object.assign({},it); delete body.id; body.status=value;
+    statusSave(id,value);
+    saveItem(id,body);
+    if(!canEdit) flash("הסטטוס נשמר במכשיר הזה");
+  }
   function newId(){return "it-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,6);}
-  function idleMsg(){ return canEdit ? "" : "תצוגה בלבד"; }
+  function idleMsg(){ return canEdit ? "" : "שינויי סטטוס נשמרים במכשיר הזה"; }
   function flash(msg){
     const el=document.getElementById("savestate"); if(!el) return;
     el.textContent=msg;
@@ -1184,6 +1217,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   /* ============ events ============ */
   document.addEventListener("click", function(ev){
     if(ev.target.closest("a[href]")) return;   /* let real links behave like links */
+    if(ev.target.closest("[data-status]")) return; /* the select handles its own change */
     const tab=ev.target.closest("#tabs button");
     if(tab){ state.view=tab.dataset.view; render(); return; }
     if(ev.target.closest("[data-goflights]")){ state.view="flights"; render(); window.scrollTo({top:0,behavior:"smooth"}); return; }
@@ -1275,7 +1309,11 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   });
 
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && state.editing) closeEditor(); });
-  document.addEventListener("change",function(e){ if(e.target.id==="rate") saveSettings({rate:Number(e.target.value)||4}); });
+  document.addEventListener("change",function(e){
+    const status=e.target.closest && e.target.closest("[data-status]");
+    if(status){ setItemStatus(status.dataset.status,status.value); return; }
+    if(e.target.id==="rate") saveSettings({rate:Number(e.target.value)||4});
+  });
 
   /* ============ boot ============ */
   document.getElementById("root").appendChild(
@@ -1292,9 +1330,15 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     }
   }catch(e){}
 
+  const savedStatuses=statusLoad();
+  Object.keys(savedStatuses).forEach(function(id){
+    const it=state.items.get(id), value=savedStatuses[id];
+    if(it && STATUSES.indexOf(value)>-1) it.status=value;
+  });
+
   state.pack=packLoad();
   render();
-  document.getElementById("savestate").textContent="תצוגה בלבד";
+  document.getElementById("savestate").textContent="שינויי סטטוס נשמרים במכשיר הזה";
 
   (async function(){
     try{
