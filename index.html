@@ -1,4 +1,4 @@
-<!doctype html><!-- Publishing check: no visible change --><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light"><title>שנים עשר לילות במונטנגרו</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Secular+One&display=swap"><style id="appcss">
+<!doctype html><!-- Publishing check: no visible change --><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light"><title>שנים עשר לילות במונטנגרו</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Secular+One&display=swap"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><style id="appcss">
 :root{
   --ink:#25302f; --ink-soft:#5b6664; --muted:#7c8582;
   --paper:#f7f1e3; --paper-card:#fffcf5; --paper-sunk:#efe8d6;
@@ -158,6 +158,17 @@ a{color:var(--sea-deep)}
   margin-top:18px; padding-top:14px; border-top:1px dashed var(--rule);
   font-size:.94rem; line-height:1.65; color:var(--ink-2); white-space:pre-wrap;
 }
+.drawer-map-block{margin-top:22px; padding-top:18px; border-top:1px dashed var(--rule)}
+.drawer-map-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:10px; flex-wrap:wrap}
+.drawer-map-head h4{font-family:var(--display); font-size:1rem; font-weight:500; margin:0 0 3px}
+.drawer-map-head p{font-size:.78rem; color:var(--muted); margin:0}
+.drawer-map-legend{display:flex; gap:12px; font-family:var(--label); font-size:.7rem; color:var(--ink-soft)}
+.drawer-map-legend span{display:inline-flex; align-items:center; gap:5px}
+.drawer-map-legend i{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--sea-deep)}
+.drawer-map-legend .current i{width:11px; height:11px; background:var(--terracotta)}
+.drawer-map{height:360px; border:1px solid var(--rule); border-radius:var(--r); overflow:hidden; background:var(--paper-sunk); direction:ltr}
+.drawer-map .leaflet-tooltip{font-family:var(--label); direction:rtl}
+.drawer-map-note{font-size:.76rem; color:var(--muted); margin-top:7px}
 .item.s-done{background:var(--pine-soft); border-inline-start-color:var(--pine)}
 .item.s-idea{
   background:rgba(255,255,255,.55); box-shadow:none;
@@ -397,7 +408,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
 /* ---------- drawer ---------- */
 .scrim{position:fixed; inset:0; background:rgba(37,48,47,.34); z-index:40}
 .drawer{
-  position:fixed; z-index:41; top:0; bottom:0; inset-inline-start:0; width:min(440px,100%);
+  position:fixed; z-index:41; top:0; bottom:0; inset-inline-start:0; width:min(760px,100%);
   background:var(--paper-card); overflow-y:auto; padding:26px 24px 44px;
   box-shadow:12px 0 44px -22px rgba(27,79,102,.5);
 }
@@ -428,6 +439,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   .item{grid-template-columns:1fr; gap:3px; padding:14px 16px}
   .i-right{margin-top:7px}
   .drawer{width:100%; padding:20px 16px 40px}
+  .drawer-map{height:310px}
   .maplink{padding:4px 12px; font-size:.78rem}
   .basegrid{grid-template-columns:1fr}   /* one base per row on a phone */
   .tiles{grid-template-columns:1fr 1fr}
@@ -989,6 +1001,69 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     return {done:done,total:total};
   }
   const MAP_MID="1tPm8AVei6TM3MtQVC4rsnWlAfsrND7Y";
+  const BASE_POINTS = [
+    {name:"בסיס 1 · Fireside Lodge", lat:42.869364, lon:19.419962},
+    {name:"בסיס 2 · Vila San Forest", lat:43.100522, lon:19.109225},
+    {name:"בסיס 3 · הדירה בבודווה", lat:42.278727, lon:18.830427}
+  ];
+  const ITEM_POINTS = {
+    "bud-belveder":[42.381454,18.943617], "bud-bluecave":[42.374071,18.59634],
+    "bud-kotor-cablecar":[42.393884,18.793658], "bud-kotor":[42.422144,18.774835],
+    "bud-lipa-cave":[42.367138,18.953087], "bud-lovcen":[42.399653,18.837556],
+    "bud-njegusi":[42.430214,18.826438], "bud-oldtown":[42.277844,18.838067],
+    "bud-pavlova":[42.36274,19.05768], "bud-perast":[42.486768,18.688746],
+    "bud-pomodorino":[42.425614,18.770641], "bud-skadar":[42.271806,19.123036],
+    "bud-sveti-stefan":[42.258129,18.895997], "car-hire":[42.411929,18.718211],
+    "drive-1-airport-lipovo":[42.869364,19.419962], "drive-2-lipovo-zabljak":[43.100522,19.109225],
+    "drive-3-zabljak-budva":[42.278727,18.830427], "drive-4-budva-airport":[42.411929,18.718211],
+    "dur-black-lake":[43.146169,19.092133], "dur-bobotov":[43.127796,19.034222],
+    "dur-curevac":[43.201612,19.0931], "dur-oro":[43.154954,19.120237],
+    "dur-p14":[43.154137,18.841038], "dur-rafting":[43.347517,18.840764],
+    "dur-ring":[43.128,19.005], "dur-zipline":[43.150178,19.294618],
+    "fly-home":[42.411929,18.718211], "fly-out":[42.411929,18.718211],
+    "lip-bikes":[42.869364,19.419962], "lip-biogradska":[42.900708,19.595545],
+    "lip-dinner":[42.8725,19.4175], "lip-gondola":[42.84156,19.639639],
+    "lip-groceries":[42.820475,19.524081], "lip-house":[42.869364,19.419962],
+    "lip-kolasin-town":[42.820475,19.524081], "lip-mill":[42.875,19.419],
+    "lip-moraca":[42.766171,19.390494], "lip-restday":[42.869364,19.419962],
+    "lip-river":[42.866,19.4205], "lip-sinjajevina":[42.959444,19.333611],
+    "stay-budva":[42.278727,18.830427], "stay-lipovo":[42.869364,19.419962],
+    "stay-zabljak":[43.100522,19.109225], "drive3-vidikovac":[42.826858,18.898727],
+    "drive3-zipline":[43.157334,18.846008], "drive3-ferrata":[43.154356,18.839815]
+  };
+  let detailMap=null;
+  function drawerMapHtml(){
+    return '<section class="drawer-map-block">'+
+      '<div class="drawer-map-head"><div><h4>על המפה</h4><p>שלושת הבסיסים והמיקום של האייטם הזה בלבד</p></div>'+
+      '<div class="drawer-map-legend"><span><i></i> בסיס</span><span class="current"><i></i> האייטם</span></div></div>'+
+      '<div class="drawer-map" id="drawer-map" aria-label="מפת הבסיסים והאייטם"></div>'+
+      '<div class="drawer-map-note" id="drawer-map-note">המפה מבוססת על הנקודות ממפת הטיול.</div></section>';
+  }
+  function initDrawerMap(e){
+    const el=document.getElementById("drawer-map");
+    if(!el) return;
+    if(!window.L){ el.innerHTML='<p class="empty">המפה לא הצליחה להיטען.</p>'; return; }
+    detailMap=L.map(el,{scrollWheelZoom:false});
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(detailMap);
+    const bounds=[];
+    BASE_POINTS.forEach(function(p){
+      bounds.push([p.lat,p.lon]);
+      L.circleMarker([p.lat,p.lon],{radius:7,color:"#1b4f66",weight:2,fillColor:"#dcecf0",fillOpacity:1})
+        .bindTooltip(p.name,{direction:"top"}).addTo(detailMap);
+    });
+    const p=ITEM_POINTS[e.id];
+    if(p){
+      bounds.push(p);
+      L.circleMarker(p,{radius:10,color:"#8d4935",weight:3,fillColor:"#ad5f45",fillOpacity:1})
+        .bindTooltip(e.title||"האייטם",{direction:"top",permanent:true,opacity:.92}).addTo(detailMap);
+    }else{
+      const note=document.getElementById("drawer-map-note");
+      if(note) note.textContent="לא נמצא מיקום מדויק לאייטם; מוצגים שלושת הבסיסים בלבד.";
+    }
+    detailMap.fitBounds(bounds,{padding:[30,30],maxZoom:11});
+  }
   function renderMap(){
     const embed="https://www.google.com/maps/d/embed?mid="+MAP_MID+"&hl=iw";
     const open="https://www.google.com/maps/d/viewer?mid="+MAP_MID+"&hl=iw";
@@ -1074,15 +1149,21 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
         (e.type==="stay"? row("לילות", nn+" · צ׳ק-אאוט "+longDate(addDays(e.day,nn))) : "")+
         row("אישור", e.conf, true)+ row("עלות", money, true)+
       '</div>'+
+      drawerMapHtml()+
       (e.notes? '<div class="rnotes">'+esc(e.notes)+'</div>':'')+
     '</aside>';
   }
 
   function drawDrawer(){
     const host=document.getElementById("drawerhost");
+    if(detailMap){ detailMap.remove(); detailMap=null; }
     if(!state.editing){host.innerHTML=""; return;}
     const e=state.editing;
-    if(!canEdit){ host.innerHTML=readDrawer(e); return; }
+    if(!canEdit){
+      host.innerHTML=readDrawer(e);
+      requestAnimationFrame(function(){initDrawerMap(e);});
+      return;
+    }
     const opt=function(v,cur,label){return '<option value="'+esc(v)+'"'+(String(cur)===String(v)?" selected":"")+'>'+esc(label||v)+'</option>';};
     host.innerHTML =
     '<div class="scrim" data-close="1"></div><aside class="drawer" role="dialog" aria-label="עריכת פריט">'+
@@ -1117,6 +1198,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
                    (e.link.indexOf("google.com/maps")>-1?"פתיחה במפות ↗":"פתיחה באתר ↗")+'</a>':'')+'</div>'+
         '<div class="f full"><label for="f-notes">הערות</label><textarea id="f-notes" placeholder="צ׳ק-אין אחרי 15:00, מפתח מבית הקפה ליד, מזומן בלבד">'+esc(e.notes)+'</textarea></div>'+
       '</div>'+
+      drawerMapHtml()+
       '<div class="drawer-actions">'+
         (canEdit? '<button class="btn btn-primary" id="save">שמירה</button>':'')+
         '<button class="btn" data-close="1">'+(canEdit?"ביטול":"סגירה")+'</button>'+
@@ -1127,6 +1209,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     } else {
       const ti=document.getElementById("f-title"); if(ti) ti.focus();
     }
+    requestAnimationFrame(function(){initDrawerMap(e);});
   }
   function readForm(){
     const g=function(id){const el=document.getElementById(id); return el? el.value : "";};
