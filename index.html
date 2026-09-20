@@ -168,14 +168,14 @@ a{color:var(--sea-deep)}
 .drawer-map-legend .current i{width:11px; height:11px; background:var(--terracotta)}
 .drawer-map{border:1px solid var(--rule); border-radius:var(--r); overflow:hidden; background:#dcecf0; direction:ltr}
 .drawer-map svg{display:block; width:100%; height:auto}
-.drawer-map .country{fill:#e5ead9; stroke:#708b78; stroke-width:2.4; stroke-linejoin:round}
-.drawer-map .sea-label,.drawer-map .city-label{font-family:var(--label); fill:#6d858c; font-size:14px}
-.drawer-map .city-label{fill:#78817b; font-size:12px}
-.drawer-map .base-dot{fill:var(--sea-deep); stroke:var(--paper-card); stroke-width:3}
-.drawer-map .item-dot{fill:var(--terracotta); stroke:var(--paper-card); stroke-width:4}
-.drawer-map .dot-number{font-family:var(--label); fill:white; font-size:12px; font-weight:700; text-anchor:middle; dominant-baseline:central}
+.drawer-map .country{fill:#e5ead9; stroke:#708b78; stroke-width:2.4; stroke-linejoin:round; vector-effect:non-scaling-stroke}
+.drawer-map .route-halo{fill:none; stroke:var(--paper-card); stroke-width:9; stroke-linecap:round; vector-effect:non-scaling-stroke}
+.drawer-map .route-line{fill:none; stroke:var(--terracotta); stroke-width:4; stroke-linecap:round; vector-effect:non-scaling-stroke}
+.drawer-map .base-dot{fill:var(--sea-deep); stroke:var(--paper-card); stroke-width:3; vector-effect:non-scaling-stroke}
+.drawer-map .item-dot{fill:var(--terracotta); stroke:var(--paper-card); stroke-width:4; vector-effect:non-scaling-stroke}
 .drawer-map .point-label{font-family:var(--label); fill:var(--ink); font-size:13px; font-weight:700; paint-order:stroke; stroke:var(--paper-card); stroke-width:5px; stroke-linejoin:round}
 .drawer-map-note{font-size:.76rem; color:var(--muted); margin-top:7px}
+.drawer-route-link{display:inline-block; margin-top:10px; color:var(--sea-deep); font-family:var(--label); font-size:.82rem; text-decoration:underline; text-underline-offset:3px}
 .item.s-done{background:var(--pine-soft); border-inline-start-color:var(--pine)}
 .item.s-idea{
   background:rgba(255,255,255,.55); box-shadow:none;
@@ -1042,28 +1042,50 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     const minLon=18.34,maxLon=20.45,minLat=41.75,maxLat=43.65,w=700,h=430,p=24;
     return [p+(lon-minLon)/(maxLon-minLon)*(w-p*2),h-p-(lat-minLat)/(maxLat-minLat)*(h-p*2)];
   }
+  function itemBase(e){
+    const d=e.day||START;
+    return d<"2026-09-27" ? BASE_POINTS[0] : (d<"2026-10-01" ? BASE_POINTS[1] : BASE_POINTS[2]);
+  }
   function drawerMapHtml(e){
     const outline=COUNTRY_OUTLINE.map(function(p,i){const q=mapXY(p[1],p[0]);return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1);}).join(" ")+" Z";
-    const bases=BASE_POINTS.map(function(p,i){
-      const q=mapXY(p.lat,p.lon);
-      return '<g><title>'+esc(p.name)+'</title><circle class="base-dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="10"></circle>'+
-        '<text class="dot-number" x="'+q[0].toFixed(1)+'" y="'+q[1].toFixed(1)+'">'+(i+1)+'</text></g>';
-    }).join("");
-    const p=ITEM_POINTS[e.id];
-    let item="",note="המפה מובנית באתר ואינה משתמשת בשרת אריחים חיצוני.";
+    const base=itemBase(e), bp=mapXY(base.lat,base.lon), p=ITEM_POINTS[e.id];
+    let mapBody="",note="הקו מציג את הכיוון הכללי; הכפתור פותח מסלול נהיגה מדויק ב‑Google Maps.",routeLink="";
+    let view="0 0 700 430";
     if(p){
-      const q=mapXY(p[0],p[1]), tx=Math.min(610,q[0]+15), anchor=tx===610?"end":"start";
-      item='<g><title>'+esc(e.title||"האייטם")+'</title><circle class="item-dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="12"></circle>'+
-        '<text class="point-label" text-anchor="'+anchor+'" x="'+tx.toFixed(1)+'" y="'+(q[1]-16).toFixed(1)+'">האייטם</text></g>';
-    }else note="לא נמצא מיקום מדויק לאייטם; מוצגים שלושת הבסיסים בלבד.";
+      const ip=mapXY(p[0],p[1]), dx=ip[0]-bp[0], dy=ip[1]-bp[1], len=Math.sqrt(dx*dx+dy*dy);
+      let vw=Math.max(82,Math.abs(dx)+58), vh=Math.max(52,Math.abs(dy)+46), ratio=700/430;
+      if(vw/vh<ratio) vw=vh*ratio; else vh=vw/ratio;
+      vw=Math.min(700,vw); vh=Math.min(430,vh);
+      const vx=Math.max(0,Math.min(700-vw,(bp[0]+ip[0]-vw)/2));
+      const vy=Math.max(0,Math.min(430-vh,(bp[1]+ip[1]-vh)/2));
+      view=[vx,vy,vw,vh].map(function(n){return n.toFixed(1);}).join(" ");
+      const r=vw/70, fs=vw/38, same=len<3;
+      let route="";
+      if(!same){
+        const off=Math.min(28,len*.18), cx=(bp[0]+ip[0])/2-dy/len*off, cy=(bp[1]+ip[1])/2+dx/len*off;
+        const d="M"+bp[0].toFixed(1)+" "+bp[1].toFixed(1)+" Q"+cx.toFixed(1)+" "+cy.toFixed(1)+" "+ip[0].toFixed(1)+" "+ip[1].toFixed(1);
+        route='<path class="route-halo" d="'+d+'"></path><path class="route-line" d="'+d+'" marker-end="url(#route-arrow)"></path>';
+      }
+      const baseLabel=same?"בסיס ויעד":"בסיס";
+      mapBody='<defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3" markerHeight="3" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c1502e"></path></marker></defs>'+route+
+        '<g><title>'+esc(base.name)+'</title><circle class="base-dot" cx="'+bp[0].toFixed(1)+'" cy="'+bp[1].toFixed(1)+'" r="'+r.toFixed(1)+'"></circle>'+
+        '<text class="point-label" style="font-size:'+fs.toFixed(1)+'px" text-anchor="middle" x="'+bp[0].toFixed(1)+'" y="'+(bp[1]-r*1.8).toFixed(1)+'">'+baseLabel+'</text></g>'+
+        (same?'':'<g><title>'+esc(e.title||"היעד")+'</title><circle class="item-dot" cx="'+ip[0].toFixed(1)+'" cy="'+ip[1].toFixed(1)+'" r="'+(r*1.12).toFixed(1)+'"></circle>'+
+        '<text class="point-label" style="font-size:'+fs.toFixed(1)+'px" text-anchor="middle" x="'+ip[0].toFixed(1)+'" y="'+(ip[1]-r*2).toFixed(1)+'">יעד</text></g>');
+      const origin=base.lat+","+base.lon, destination=p[0]+","+p[1];
+      routeLink='<a class="drawer-route-link" href="https://www.google.com/maps/dir/?api=1&amp;origin='+origin+'&amp;destination='+destination+'&amp;travelmode=driving" target="_blank" rel="noopener">פתיחת מסלול הנהיגה ב‑Google Maps ↗</a>';
+    }else{
+      const r=7, q=bp;
+      mapBody='<circle class="base-dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+r+'"></circle>';
+      note="לא נמצא מיקום מדויק ליעד; מוצג הבסיס של האייטם בלבד.";
+    }
+    const summary=[distanceValue(e),travelValue(e)].filter(Boolean).join(" · ");
     return '<section class="drawer-map-block">'+
-      '<div class="drawer-map-head"><div><h4>על המפה</h4><p>שלושת הבסיסים והמיקום של האייטם הזה בלבד</p></div>'+
-      '<div class="drawer-map-legend"><span><i></i> בסיס</span><span class="current"><i></i> האייטם</span></div></div>'+
-      '<div class="drawer-map" aria-label="מפת הבסיסים והאייטם"><svg viewBox="0 0 700 430" role="img" aria-label="מפת מונטנגרו עם שלושת הבסיסים והאייטם">'+
-        '<rect width="700" height="430" fill="#dcecf0"></rect><path class="country" d="'+outline+'"></path>'+
-        '<text class="sea-label" x="42" y="330" transform="rotate(-62 42 330)">הים האדריאטי</text>'+
-        '<text class="city-label" x="260" y="337">בודווה</text><text class="city-label" x="350" y="250">פודגוריצה</text>'+
-        bases+item+'</svg></div><div class="drawer-map-note">'+esc(note)+'</div></section>';
+      '<div class="drawer-map-head"><div><h4>המסלול מהבסיס</h4><p>'+esc(base.name)+(summary?' · '+esc(summary):'')+'</p></div>'+
+      '<div class="drawer-map-legend"><span><i></i> בסיס</span><span class="current"><i></i> יעד</span></div></div>'+
+      '<div class="drawer-map" aria-label="מפת המסלול מהבסיס ליעד"><svg viewBox="'+view+'" role="img" aria-label="מסלול מהבסיס אל היעד">'+
+        '<rect width="700" height="430" fill="#dcecf0"></rect><path class="country" d="'+outline+'"></path>'+mapBody+'</svg></div>'+routeLink+
+      '<div class="drawer-map-note">'+esc(note)+'</div></section>';
   }
   function renderMap(){
     const embed="https://www.google.com/maps/d/embed?mid="+MAP_MID+"&hl=iw";
