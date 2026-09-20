@@ -1,4 +1,4 @@
-<!doctype html><!-- Publishing check: no visible change --><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light"><title>שנים עשר לילות במונטנגרו</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Secular+One&display=swap"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><style id="appcss">
+<!doctype html><!-- Publishing check: no visible change --><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light"><title>שנים עשר לילות במונטנגרו</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bellefair&family=Heebo:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Secular+One&display=swap"><style id="appcss">
 :root{
   --ink:#25302f; --ink-soft:#5b6664; --muted:#7c8582;
   --paper:#f7f1e3; --paper-card:#fffcf5; --paper-sunk:#efe8d6;
@@ -166,8 +166,15 @@ a{color:var(--sea-deep)}
 .drawer-map-legend span{display:inline-flex; align-items:center; gap:5px}
 .drawer-map-legend i{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--sea-deep)}
 .drawer-map-legend .current i{width:11px; height:11px; background:var(--terracotta)}
-.drawer-map{height:360px; border:1px solid var(--rule); border-radius:var(--r); overflow:hidden; background:var(--paper-sunk); direction:ltr}
-.drawer-map .leaflet-tooltip{font-family:var(--label); direction:rtl}
+.drawer-map{border:1px solid var(--rule); border-radius:var(--r); overflow:hidden; background:#dcecf0; direction:ltr}
+.drawer-map svg{display:block; width:100%; height:auto}
+.drawer-map .country{fill:#e5ead9; stroke:#708b78; stroke-width:2.4; stroke-linejoin:round}
+.drawer-map .sea-label,.drawer-map .city-label{font-family:var(--label); fill:#6d858c; font-size:14px}
+.drawer-map .city-label{fill:#78817b; font-size:12px}
+.drawer-map .base-dot{fill:var(--sea-deep); stroke:var(--paper-card); stroke-width:3}
+.drawer-map .item-dot{fill:var(--terracotta); stroke:var(--paper-card); stroke-width:4}
+.drawer-map .dot-number{font-family:var(--label); fill:white; font-size:12px; font-weight:700; text-anchor:middle; dominant-baseline:central}
+.drawer-map .point-label{font-family:var(--label); fill:var(--ink); font-size:13px; font-weight:700; paint-order:stroke; stroke:var(--paper-card); stroke-width:5px; stroke-linejoin:round}
 .drawer-map-note{font-size:.76rem; color:var(--muted); margin-top:7px}
 .item.s-done{background:var(--pine-soft); border-inline-start-color:var(--pine)}
 .item.s-idea{
@@ -439,7 +446,6 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   .item{grid-template-columns:1fr; gap:3px; padding:14px 16px}
   .i-right{margin-top:7px}
   .drawer{width:100%; padding:20px 16px 40px}
-  .drawer-map{height:310px}
   .maplink{padding:4px 12px; font-size:.78rem}
   .basegrid{grid-template-columns:1fr}   /* one base per row on a phone */
   .tiles{grid-template-columns:1fr 1fr}
@@ -1031,38 +1037,33 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "stay-zabljak":[43.100522,19.109225], "drive3-vidikovac":[42.826858,18.898727],
     "drive3-zipline":[43.157334,18.846008], "drive3-ferrata":[43.154356,18.839815]
   };
-  let detailMap=null;
-  function drawerMapHtml(){
+  const COUNTRY_OUTLINE=[[18.49643,42.416327],[18.437148,42.493402],[18.437355,42.559212],[18.492132,42.564767],[18.486654,42.58983],[18.538434,42.618304],[18.550009,42.668069],[18.453891,42.793151],[18.443659,42.834467],[18.473322,42.862553],[18.433531,42.954201],[18.483037,43.014637],[18.638996,43.020243],[18.620599,43.122563],[18.688399,43.224469],[18.664318,43.233176],[18.833506,43.324153],[18.821207,43.341387],[18.923423,43.346838],[18.992463,43.267102],[19.069668,43.30883],[19.00993,43.410995],[18.905647,43.490628],[18.977477,43.546232],[19.054991,43.5067],[19.122791,43.535948],[19.195345,43.532796],[19.175191,43.509619],[19.192244,43.454532],[19.372285,43.384226],[19.598111,43.176203],[19.713556,43.165609],[19.805127,43.089955],[19.92915,43.113907],[20.116942,42.976654],[20.223189,42.957663],[20.35362,42.890975],[20.345352,42.827439],[20.217608,42.802737],[20.183398,42.742508],[20.076325,42.773437],[20.026508,42.743206],[20.03612,42.707989],[20.10392,42.653108],[20.077048,42.55991],[20.039221,42.557765],[19.981757,42.510765],[19.801406,42.468132],[19.73433,42.524382],[19.746009,42.5989],[19.722134,42.64608],[19.676039,42.646675],[19.621779,42.604997],[19.588086,42.532857],[19.417243,42.374107],[19.400397,42.325893],[19.274926,42.191276],[19.282058,42.164559],[19.372491,42.104253],[19.350581,42.027823],[19.371045,41.98656],[19.346447,41.961548],[19.365082,41.852362],[19.310232,41.894517],[19.170258,41.937974],[19.13795,41.985297],[19.139171,42.042426],[19.08253,42.081204],[19.083832,42.110093],[19.01059,42.139553],[18.913341,42.222235],[18.885997,42.284369],[18.778575,42.27147],[18.678477,42.385972],[18.61671,42.368069],[18.570649,42.392971],[18.545177,42.42357],[18.562836,42.438544],[18.70045,42.392971],[18.687348,42.482896],[18.654145,42.451809],[18.502452,42.455634],[18.529796,42.400377],[18.49643,42.416327]];
+  function mapXY(lat,lon){
+    const minLon=18.34,maxLon=20.45,minLat=41.75,maxLat=43.65,w=700,h=430,p=24;
+    return [p+(lon-minLon)/(maxLon-minLon)*(w-p*2),h-p-(lat-minLat)/(maxLat-minLat)*(h-p*2)];
+  }
+  function drawerMapHtml(e){
+    const outline=COUNTRY_OUTLINE.map(function(p,i){const q=mapXY(p[1],p[0]);return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1);}).join(" ")+" Z";
+    const bases=BASE_POINTS.map(function(p,i){
+      const q=mapXY(p.lat,p.lon);
+      return '<g><title>'+esc(p.name)+'</title><circle class="base-dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="10"></circle>'+
+        '<text class="dot-number" x="'+q[0].toFixed(1)+'" y="'+q[1].toFixed(1)+'">'+(i+1)+'</text></g>';
+    }).join("");
+    const p=ITEM_POINTS[e.id];
+    let item="",note="המפה מובנית באתר ואינה משתמשת בשרת אריחים חיצוני.";
+    if(p){
+      const q=mapXY(p[0],p[1]), tx=Math.min(610,q[0]+15), anchor=tx===610?"end":"start";
+      item='<g><title>'+esc(e.title||"האייטם")+'</title><circle class="item-dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="12"></circle>'+
+        '<text class="point-label" text-anchor="'+anchor+'" x="'+tx.toFixed(1)+'" y="'+(q[1]-16).toFixed(1)+'">האייטם</text></g>';
+    }else note="לא נמצא מיקום מדויק לאייטם; מוצגים שלושת הבסיסים בלבד.";
     return '<section class="drawer-map-block">'+
       '<div class="drawer-map-head"><div><h4>על המפה</h4><p>שלושת הבסיסים והמיקום של האייטם הזה בלבד</p></div>'+
       '<div class="drawer-map-legend"><span><i></i> בסיס</span><span class="current"><i></i> האייטם</span></div></div>'+
-      '<div class="drawer-map" id="drawer-map" aria-label="מפת הבסיסים והאייטם"></div>'+
-      '<div class="drawer-map-note" id="drawer-map-note">המפה מבוססת על הנקודות ממפת הטיול.</div></section>';
-  }
-  function initDrawerMap(e){
-    const el=document.getElementById("drawer-map");
-    if(!el) return;
-    if(!window.L){ el.innerHTML='<p class="empty">המפה לא הצליחה להיטען.</p>'; return; }
-    detailMap=L.map(el,{scrollWheelZoom:false});
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-      maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(detailMap);
-    const bounds=[];
-    BASE_POINTS.forEach(function(p){
-      bounds.push([p.lat,p.lon]);
-      L.circleMarker([p.lat,p.lon],{radius:7,color:"#1b4f66",weight:2,fillColor:"#dcecf0",fillOpacity:1})
-        .bindTooltip(p.name,{direction:"top"}).addTo(detailMap);
-    });
-    const p=ITEM_POINTS[e.id];
-    if(p){
-      bounds.push(p);
-      L.circleMarker(p,{radius:10,color:"#8d4935",weight:3,fillColor:"#ad5f45",fillOpacity:1})
-        .bindTooltip(e.title||"האייטם",{direction:"top",permanent:true,opacity:.92}).addTo(detailMap);
-    }else{
-      const note=document.getElementById("drawer-map-note");
-      if(note) note.textContent="לא נמצא מיקום מדויק לאייטם; מוצגים שלושת הבסיסים בלבד.";
-    }
-    detailMap.fitBounds(bounds,{padding:[30,30],maxZoom:11});
+      '<div class="drawer-map" aria-label="מפת הבסיסים והאייטם"><svg viewBox="0 0 700 430" role="img" aria-label="מפת מונטנגרו עם שלושת הבסיסים והאייטם">'+
+        '<rect width="700" height="430" fill="#dcecf0"></rect><path class="country" d="'+outline+'"></path>'+
+        '<text class="sea-label" x="42" y="330" transform="rotate(-62 42 330)">הים האדריאטי</text>'+
+        '<text class="city-label" x="260" y="337">בודווה</text><text class="city-label" x="350" y="250">פודגוריצה</text>'+
+        bases+item+'</svg></div><div class="drawer-map-note">'+esc(note)+'</div></section>';
   }
   function renderMap(){
     const embed="https://www.google.com/maps/d/embed?mid="+MAP_MID+"&hl=iw";
@@ -1149,19 +1150,17 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
         (e.type==="stay"? row("לילות", nn+" · צ׳ק-אאוט "+longDate(addDays(e.day,nn))) : "")+
         row("אישור", e.conf, true)+ row("עלות", money, true)+
       '</div>'+
-      drawerMapHtml()+
+      drawerMapHtml(e)+
       (e.notes? '<div class="rnotes">'+esc(e.notes)+'</div>':'')+
     '</aside>';
   }
 
   function drawDrawer(){
     const host=document.getElementById("drawerhost");
-    if(detailMap){ detailMap.remove(); detailMap=null; }
     if(!state.editing){host.innerHTML=""; return;}
     const e=state.editing;
     if(!canEdit){
       host.innerHTML=readDrawer(e);
-      requestAnimationFrame(function(){initDrawerMap(e);});
       return;
     }
     const opt=function(v,cur,label){return '<option value="'+esc(v)+'"'+(String(cur)===String(v)?" selected":"")+'>'+esc(label||v)+'</option>';};
@@ -1198,7 +1197,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
                    (e.link.indexOf("google.com/maps")>-1?"פתיחה במפות ↗":"פתיחה באתר ↗")+'</a>':'')+'</div>'+
         '<div class="f full"><label for="f-notes">הערות</label><textarea id="f-notes" placeholder="צ׳ק-אין אחרי 15:00, מפתח מבית הקפה ליד, מזומן בלבד">'+esc(e.notes)+'</textarea></div>'+
       '</div>'+
-      drawerMapHtml()+
+      drawerMapHtml(e)+
       '<div class="drawer-actions">'+
         (canEdit? '<button class="btn btn-primary" id="save">שמירה</button>':'')+
         '<button class="btn" data-close="1">'+(canEdit?"ביטול":"סגירה")+'</button>'+
@@ -1209,7 +1208,6 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     } else {
       const ti=document.getElementById("f-title"); if(ti) ti.focus();
     }
-    requestAnimationFrame(function(){initDrawerMap(e);});
   }
   function readForm(){
     const g=function(id){const el=document.getElementById(id); return el? el.value : "";};
