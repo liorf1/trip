@@ -188,6 +188,7 @@ a{color:var(--sea-deep)}
 }
 .chip.booked{background:var(--sea-soft); color:var(--sea-deep)}
 .chip.done{background:var(--pine-soft); color:var(--pine-deep)}
+.chip.must{background:var(--gold-soft); color:var(--gold-ink); border:1px solid var(--gold)}
 .chip.idea{background:transparent; border:1px dashed var(--rule-2); color:var(--muted)}
 .chip.decide{background:var(--terracotta); color:var(--paper-card)}
 .status-select{border:0; cursor:pointer; appearance:auto; padding-inline:10px 7px}
@@ -199,6 +200,9 @@ a{color:var(--sea-deep)}
 }
 .item.s-decide .i-title{font-weight:700}
 .bigitem.s-decide{background:var(--terracotta-soft); box-shadow:none; border-inline-start-color:var(--terracotta)}
+.item.s-must{background:var(--gold-soft); border-inline-start-color:var(--gold)}
+.item.s-must .i-title{font-weight:700}
+.bigitem.s-must{background:var(--gold-soft); border-inline-start-color:var(--gold)}
 
 /* ---------- whose idea it was ---------- */
 .srcs{display:inline-flex; gap:5px; flex-wrap:wrap}
@@ -307,10 +311,12 @@ a{color:var(--sea-deep)}
 .backrow{display:flex; gap:9px; align-items:center; margin-top:22px; flex-wrap:wrap}
 .draghint{font-size:.78rem; color:var(--muted); margin-inline-start:6px}
 
-/* ---------- drag to another day ---------- */
+/* ---------- drag between days and items ---------- */
 .item[draggable="true"]{cursor:grab}
 .item[draggable="true"]:active{cursor:grabbing}
 .item.dragging{opacity:.35; box-shadow:none}
+.item.drop-before{box-shadow:0 -4px 0 -2px var(--terracotta),var(--shadow-sm)}
+.item.drop-after{box-shadow:0 4px 0 -2px var(--terracotta),var(--shadow-sm)}
 .day.drop-on{background:var(--marker-soft); border-radius:var(--r-sm)}
 .day.drop-on .lanes{outline:2px dashed var(--marker-mid); outline-offset:7px; border-radius:6px}
 
@@ -477,7 +483,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     food:     {lane:"do",   label:"אוכל"},
     note:     {lane:"do",   label:"לסדר"}
   };
-  const STATUSES = ["idea","decide","booked","done","skipped"];
+  const STATUSES = ["idea","decide","must","booked","done","skipped"];
   const SRC_KEYS = ["anna","fb","claude"];
   const SRC = {
     anna:   {label:"אנה", full:"אנה, המארחת בליפובו"},
@@ -555,7 +561,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "drive-4-budva-airport":"כ־20 ק״מ"
   };
   const MUST_ITEMS = {"dur-oro":true};
-  const ST_HE = {idea:"רעיון", decide:"הוחלט", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
+  const ST_HE = {idea:"רעיון", decide:"הוחלט", must:"חובה", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
 
   /* ============ date helpers ============ */
   function iso(d){return d.toISOString().slice(0,10);}
@@ -584,6 +590,13 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   function list(){
     return Array.from(state.items.values()).sort(function(a,b){
       if(a.day!==b.day) return a.day<b.day?-1:1;
+      const ao=Number(a.sortOrder), bo=Number(b.sortOrder);
+      const ah=has(a.sortOrder)&&isFinite(ao), bh=has(b.sortOrder)&&isFinite(bo);
+      if(ah||bh){
+        if(ah&&!bh) return -1;
+        if(!ah&&bh) return 1;
+        if(ao!==bo) return ao-bo;
+      }
       const ta=a.time||"99:99", tb=b.time||"99:99";
       if(ta!==tb) return ta<tb?-1:1;
       return (a.title||"")<(b.title||"")?-1:1;
@@ -702,7 +715,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     return out;
   }
   function baseAttr(l){ return ' data-base="'+(l.stay? ((l.n-1)%3)+1 : 0)+'"'; }
-  function dragOn(){ return canEdit && state.view==="trip" && state.tripMode==="bases" && state.openBase!==null; }
+  function dragOn(){ return state.view==="trip"; }
   function baseLabel(l){
     const r=l.stay && l.stay.region ? String(l.stay.region).trim() : "";
     return 'בסיס '+l.n+(r? ' – '+esc(r) : '');
@@ -819,7 +832,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     const nav='<div class="backrow"><button class="btn" data-openbase="none">כל הבסיסים</button>'+
       (i>0? '<button class="btn" data-openbase="'+(i-1)+'">הבסיס הקודם</button>':'')+
       (i<ls.length-1? '<button class="btn" data-openbase="'+(i+1)+'">הבסיס הבא</button>':'')+
-      '<span class="draghint">אפשר לגרור פריטים בין הימים</span></div>';
+      '<span class="draghint">אפשר לגרור פריטים בין ימים ולשנות את הסדר</span></div>';
     return nav+'<div class="spine">'+legHeader(l)+'<div class="legdays"'+baseAttr(l)+'>'+days.map(dayRow).join("")+'</div></div>';
   }
 
@@ -1143,6 +1156,15 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     saveItem(id,body);
     if(!canEdit) flash("הסטטוס נשמר במכשיר הזה");
   }
+  const LAYOUT_KEY="mne-layout-v1";
+  function layoutLoad(){ try{ return JSON.parse(localStorage.getItem(LAYOUT_KEY)||"{}")||{}; }catch(e){ return {}; } }
+  function layoutSave(items){
+    try{
+      const saved=layoutLoad();
+      items.forEach(function(it){ saved[it.id]={day:it.day,sortOrder:it.sortOrder}; });
+      localStorage.setItem(LAYOUT_KEY,JSON.stringify(saved));
+    }catch(e){}
+  }
   function newId(){return "it-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,6);}
   function idleMsg(){ return canEdit ? "" : "שינויי סטטוס נשמרים במכשיר הזה"; }
   function flash(msg){
@@ -1194,6 +1216,10 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   }
 
   function saveItem(id,body){ state.items.set(id, Object.assign({id:id}, body)); render(); persist(); }
+  function saveItems(items){
+    items.forEach(function(it){ state.items.set(it.id,it); });
+    layoutSave(items); render(); persist();
+  }
   function removeItem(id){ state.items.delete(id); render(); persist(); }
   function saveSettings(patch){ state.settings=Object.assign({},state.settings,patch); render(); persist(); }
 
@@ -1262,10 +1288,14 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     }
     if(ev.target.closest("#del")){ const id=state.editing.id; closeEditor(); if(id) removeItem(id); return; }
   });
-  /* ---- drag an item onto another day (single-base view) ---- */
-  let dragId=null, dropped=0;
+  /* ---- drag an item between days or between items ---- */
+  let dragId=null, dropped=0, dropAnchorId=null, dropAfter=false;
   function clearDrop(){
     Array.prototype.forEach.call(document.querySelectorAll(".drop-on"),function(n){n.classList.remove("drop-on");});
+    Array.prototype.forEach.call(document.querySelectorAll(".drop-before,.drop-after"),function(n){
+      n.classList.remove("drop-before","drop-after");
+    });
+    dropAnchorId=null; dropAfter=false;
   }
   function dayUnder(e){
     const t=e.target;
@@ -1291,7 +1321,14 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     if(!day) return;
     e.preventDefault();
     if(e.dataTransfer) e.dataTransfer.dropEffect="move";
-    if(!day.classList.contains("drop-on")){ clearDrop(); day.classList.add("drop-on"); }
+    clearDrop(); day.classList.add("drop-on");
+    const item=e.target.closest && e.target.closest(".item[data-edit]");
+    if(item && item.dataset.edit!==dragId){
+      const r=item.getBoundingClientRect();
+      dropAnchorId=item.dataset.edit;
+      dropAfter=e.clientY>r.top+r.height/2;
+      item.classList.add(dropAfter?"drop-after":"drop-before");
+    }
   });
   document.addEventListener("drop",function(e){
     if(!dragId) return;
@@ -1299,13 +1336,28 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     if(!day) return;
     e.preventDefault();
     const id=dragId, target=day.dataset.daydrop;
+    const anchor=dropAnchorId, after=dropAfter;
     dragId=null; dropped=Date.now(); clearDrop();
     const it=state.items.get(id);
-    if(it && it.day!==target){
-      const body=Object.assign({},it); delete body.id; body.day=target;
-      saveItem(id,body);
-      flash("הועבר ל־"+shortDate(target));
-    } else { render(); }
+    if(!it){ render(); return; }
+    const source=it.day;
+    const targetItems=itemsOn(target).filter(function(x){return x.id!==id;});
+    let at=targetItems.length;
+    if(anchor){
+      const found=targetItems.findIndex(function(x){return x.id===anchor;});
+      if(found>-1) at=found+(after?1:0);
+    }
+    const moved=Object.assign({},it,{day:target});
+    targetItems.splice(at,0,moved);
+    const changed=[];
+    targetItems.forEach(function(x,i){ changed.push(Object.assign({},x,{sortOrder:(i+1)*10})); });
+    if(source!==target){
+      itemsOn(source).filter(function(x){return x.id!==id;}).forEach(function(x,i){
+        changed.push(Object.assign({},x,{sortOrder:(i+1)*10}));
+      });
+    }
+    saveItems(changed);
+    flash((source===target?"הסדר עודכן":"הועבר ל־"+shortDate(target))+(canEdit?"":" · נשמר במכשיר הזה"));
   });
 
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && state.editing) closeEditor(); });
@@ -1334,6 +1386,14 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   Object.keys(savedStatuses).forEach(function(id){
     const it=state.items.get(id), value=savedStatuses[id];
     if(it && STATUSES.indexOf(value)>-1) it.status=value;
+  });
+  const savedLayout=layoutLoad();
+  Object.keys(savedLayout).forEach(function(id){
+    const it=state.items.get(id), pos=savedLayout[id];
+    if(it && pos && DAYS.indexOf(pos.day)>-1){
+      it.day=pos.day;
+      if(isFinite(Number(pos.sortOrder))) it.sortOrder=Number(pos.sortOrder);
+    }
   });
 
   state.pack=packLoad();
