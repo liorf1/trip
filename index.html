@@ -158,24 +158,13 @@ a{color:var(--sea-deep)}
   margin-top:18px; padding-top:14px; border-top:1px dashed var(--rule);
   font-size:.94rem; line-height:1.65; color:var(--ink-2); white-space:pre-wrap;
 }
-.drawer-map-block{margin-top:22px; padding-top:18px; border-top:1px dashed var(--rule)}
-.drawer-map-head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:10px; flex-wrap:wrap}
-.drawer-map-head h4{font-family:var(--display); font-size:1rem; font-weight:500; margin:0 0 3px}
-.drawer-map-head p{font-size:.78rem; color:var(--muted); margin:0}
-.drawer-map-legend{display:flex; gap:12px; font-family:var(--label); font-size:.7rem; color:var(--ink-soft)}
-.drawer-map-legend span{display:inline-flex; align-items:center; gap:5px}
-.drawer-map-legend i{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--sea-deep)}
-.drawer-map-legend .current i{width:11px; height:11px; background:var(--terracotta)}
-.drawer-map{border:1px solid var(--rule); border-radius:var(--r); overflow:hidden; background:#dcecf0; direction:ltr}
-.drawer-map svg{display:block; width:100%; height:auto}
-.drawer-map .country{fill:#e5ead9; stroke:#708b78; stroke-width:2.4; stroke-linejoin:round; vector-effect:non-scaling-stroke}
-.drawer-map .route-halo{fill:none; stroke:var(--paper-card); stroke-width:9; stroke-linecap:round; vector-effect:non-scaling-stroke}
-.drawer-map .route-line{fill:none; stroke:var(--terracotta); stroke-width:4; stroke-linecap:round; vector-effect:non-scaling-stroke}
-.drawer-map .base-dot{fill:var(--sea-deep); stroke:var(--paper-card); stroke-width:3; vector-effect:non-scaling-stroke}
-.drawer-map .item-dot{fill:var(--terracotta); stroke:var(--paper-card); stroke-width:4; vector-effect:non-scaling-stroke}
-.drawer-map .point-label{font-family:var(--label); fill:var(--ink); font-size:13px; font-weight:700; paint-order:stroke; stroke:var(--paper-card); stroke-width:5px; stroke-linejoin:round}
-.drawer-map-note{font-size:.76rem; color:var(--muted); margin-top:7px}
-.drawer-route-link{display:inline-block; margin-top:10px; color:var(--sea-deep); font-family:var(--label); font-size:.82rem; text-decoration:underline; text-underline-offset:3px}
+.drawer-route{margin-top:22px; padding-top:18px; border-top:1px dashed var(--rule)}
+.drawer-route h4{font-family:var(--display); font-size:1rem; font-weight:500; margin:0 0 4px}
+.drawer-route-base{font-size:.78rem; color:var(--muted)}
+.drawer-route-stats{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+.drawer-route-stat{padding:8px 12px; border-radius:10px; background:var(--paper-sunk); font-size:.86rem}
+.drawer-route-stat b{font-family:var(--label); font-size:.68rem; color:var(--muted); margin-inline-end:6px}
+.drawer-route-link{display:block; margin-top:12px; text-align:center; text-decoration:none; background:var(--sea-deep); color:var(--paper-card); font-family:var(--label); font-size:.88rem; padding:11px 16px; border-radius:999px}
 .item.s-done{background:var(--pine-soft); border-inline-start-color:var(--pine)}
 .item.s-idea{
   background:rgba(255,255,255,.55); box-shadow:none;
@@ -1037,55 +1026,22 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     "stay-zabljak":[43.100522,19.109225], "drive3-vidikovac":[42.826858,18.898727],
     "drive3-zipline":[43.157334,18.846008], "drive3-ferrata":[43.154356,18.839815]
   };
-  const COUNTRY_OUTLINE=[[18.49643,42.416327],[18.437148,42.493402],[18.437355,42.559212],[18.492132,42.564767],[18.486654,42.58983],[18.538434,42.618304],[18.550009,42.668069],[18.453891,42.793151],[18.443659,42.834467],[18.473322,42.862553],[18.433531,42.954201],[18.483037,43.014637],[18.638996,43.020243],[18.620599,43.122563],[18.688399,43.224469],[18.664318,43.233176],[18.833506,43.324153],[18.821207,43.341387],[18.923423,43.346838],[18.992463,43.267102],[19.069668,43.30883],[19.00993,43.410995],[18.905647,43.490628],[18.977477,43.546232],[19.054991,43.5067],[19.122791,43.535948],[19.195345,43.532796],[19.175191,43.509619],[19.192244,43.454532],[19.372285,43.384226],[19.598111,43.176203],[19.713556,43.165609],[19.805127,43.089955],[19.92915,43.113907],[20.116942,42.976654],[20.223189,42.957663],[20.35362,42.890975],[20.345352,42.827439],[20.217608,42.802737],[20.183398,42.742508],[20.076325,42.773437],[20.026508,42.743206],[20.03612,42.707989],[20.10392,42.653108],[20.077048,42.55991],[20.039221,42.557765],[19.981757,42.510765],[19.801406,42.468132],[19.73433,42.524382],[19.746009,42.5989],[19.722134,42.64608],[19.676039,42.646675],[19.621779,42.604997],[19.588086,42.532857],[19.417243,42.374107],[19.400397,42.325893],[19.274926,42.191276],[19.282058,42.164559],[19.372491,42.104253],[19.350581,42.027823],[19.371045,41.98656],[19.346447,41.961548],[19.365082,41.852362],[19.310232,41.894517],[19.170258,41.937974],[19.13795,41.985297],[19.139171,42.042426],[19.08253,42.081204],[19.083832,42.110093],[19.01059,42.139553],[18.913341,42.222235],[18.885997,42.284369],[18.778575,42.27147],[18.678477,42.385972],[18.61671,42.368069],[18.570649,42.392971],[18.545177,42.42357],[18.562836,42.438544],[18.70045,42.392971],[18.687348,42.482896],[18.654145,42.451809],[18.502452,42.455634],[18.529796,42.400377],[18.49643,42.416327]];
-  function mapXY(lat,lon){
-    const minLon=18.34,maxLon=20.45,minLat=41.75,maxLat=43.65,w=700,h=430,p=24;
-    return [p+(lon-minLon)/(maxLon-minLon)*(w-p*2),h-p-(lat-minLat)/(maxLat-minLat)*(h-p*2)];
-  }
   function itemBase(e){
     const d=e.day||START;
     return d<"2026-09-27" ? BASE_POINTS[0] : (d<"2026-10-01" ? BASE_POINTS[1] : BASE_POINTS[2]);
   }
-  function drawerMapHtml(e){
-    const outline=COUNTRY_OUTLINE.map(function(p,i){const q=mapXY(p[1],p[0]);return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1);}).join(" ")+" Z";
-    const base=itemBase(e), bp=mapXY(base.lat,base.lon), p=ITEM_POINTS[e.id];
-    let mapBody="",note="הקו מציג את הכיוון הכללי; הכפתור פותח מסלול נהיגה מדויק ב‑Google Maps.",routeLink="";
-    let view="0 0 700 430";
+  function drawerRouteHtml(e){
+    const base=itemBase(e), p=ITEM_POINTS[e.id];
+    const distance=distanceValue(e)||"לא צוין";
+    const travel=travelValue(e)||"לא צוין";
+    let link="";
     if(p){
-      const ip=mapXY(p[0],p[1]), dx=ip[0]-bp[0], dy=ip[1]-bp[1], len=Math.sqrt(dx*dx+dy*dy);
-      let vw=Math.max(82,Math.abs(dx)+58), vh=Math.max(52,Math.abs(dy)+46), ratio=700/430;
-      if(vw/vh<ratio) vw=vh*ratio; else vh=vw/ratio;
-      vw=Math.min(700,vw); vh=Math.min(430,vh);
-      const vx=Math.max(0,Math.min(700-vw,(bp[0]+ip[0]-vw)/2));
-      const vy=Math.max(0,Math.min(430-vh,(bp[1]+ip[1]-vh)/2));
-      view=[vx,vy,vw,vh].map(function(n){return n.toFixed(1);}).join(" ");
-      const r=vw/70, fs=vw/38, same=len<3;
-      let route="";
-      if(!same){
-        const off=Math.min(28,len*.18), cx=(bp[0]+ip[0])/2-dy/len*off, cy=(bp[1]+ip[1])/2+dx/len*off;
-        const d="M"+bp[0].toFixed(1)+" "+bp[1].toFixed(1)+" Q"+cx.toFixed(1)+" "+cy.toFixed(1)+" "+ip[0].toFixed(1)+" "+ip[1].toFixed(1);
-        route='<path class="route-halo" d="'+d+'"></path><path class="route-line" d="'+d+'" marker-end="url(#route-arrow)"></path>';
-      }
-      const baseLabel=same?"בסיס ויעד":"בסיס";
-      mapBody='<defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="3" markerHeight="3" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c1502e"></path></marker></defs>'+route+
-        '<g><title>'+esc(base.name)+'</title><circle class="base-dot" cx="'+bp[0].toFixed(1)+'" cy="'+bp[1].toFixed(1)+'" r="'+r.toFixed(1)+'"></circle>'+
-        '<text class="point-label" style="font-size:'+fs.toFixed(1)+'px" text-anchor="middle" x="'+bp[0].toFixed(1)+'" y="'+(bp[1]-r*1.8).toFixed(1)+'">'+baseLabel+'</text></g>'+
-        (same?'':'<g><title>'+esc(e.title||"היעד")+'</title><circle class="item-dot" cx="'+ip[0].toFixed(1)+'" cy="'+ip[1].toFixed(1)+'" r="'+(r*1.12).toFixed(1)+'"></circle>'+
-        '<text class="point-label" style="font-size:'+fs.toFixed(1)+'px" text-anchor="middle" x="'+ip[0].toFixed(1)+'" y="'+(ip[1]-r*2).toFixed(1)+'">יעד</text></g>');
       const origin=base.lat+","+base.lon, destination=p[0]+","+p[1];
-      routeLink='<a class="drawer-route-link" href="https://www.google.com/maps/dir/?api=1&amp;origin='+origin+'&amp;destination='+destination+'&amp;travelmode=driving" target="_blank" rel="noopener">פתיחת מסלול הנהיגה ב‑Google Maps ↗</a>';
-    }else{
-      const r=7, q=bp;
-      mapBody='<circle class="base-dot" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+r+'"></circle>';
-      note="לא נמצא מיקום מדויק ליעד; מוצג הבסיס של האייטם בלבד.";
+      link='<a class="drawer-route-link" href="https://www.google.com/maps/dir/?api=1&amp;origin='+origin+'&amp;destination='+destination+'&amp;travelmode=driving" target="_blank" rel="noopener">פתיחת מסלול הנהיגה ב‑Google Maps ↗</a>';
     }
-    const summary=[distanceValue(e),travelValue(e)].filter(Boolean).join(" · ");
-    return '<section class="drawer-map-block">'+
-      '<div class="drawer-map-head"><div><h4>המסלול מהבסיס</h4><p>'+esc(base.name)+(summary?' · '+esc(summary):'')+'</p></div>'+
-      '<div class="drawer-map-legend"><span><i></i> בסיס</span><span class="current"><i></i> יעד</span></div></div>'+
-      '<div class="drawer-map" aria-label="מפת המסלול מהבסיס ליעד"><svg viewBox="'+view+'" role="img" aria-label="מסלול מהבסיס אל היעד">'+
-        '<rect width="700" height="430" fill="#dcecf0"></rect><path class="country" d="'+outline+'"></path>'+mapBody+'</svg></div>'+routeLink+
-      '<div class="drawer-map-note">'+esc(note)+'</div></section>';
+    return '<section class="drawer-route"><h4>מסלול מהבסיס</h4><div class="drawer-route-base">'+esc(base.name)+'</div>'+
+      '<div class="drawer-route-stats"><span class="drawer-route-stat"><b>מרחק</b>'+esc(distance)+'</span>'+
+      '<span class="drawer-route-stat"><b>זמן</b>'+esc(travel)+'</span></div>'+link+'</section>';
   }
   function renderMap(){
     const embed="https://www.google.com/maps/d/embed?mid="+MAP_MID+"&hl=iw";
@@ -1172,7 +1128,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
         (e.type==="stay"? row("לילות", nn+" · צ׳ק-אאוט "+longDate(addDays(e.day,nn))) : "")+
         row("אישור", e.conf, true)+ row("עלות", money, true)+
       '</div>'+
-      drawerMapHtml(e)+
+      drawerRouteHtml(e)+
       (e.notes? '<div class="rnotes">'+esc(e.notes)+'</div>':'')+
     '</aside>';
   }
@@ -1219,7 +1175,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
                    (e.link.indexOf("google.com/maps")>-1?"פתיחה במפות ↗":"פתיחה באתר ↗")+'</a>':'')+'</div>'+
         '<div class="f full"><label for="f-notes">הערות</label><textarea id="f-notes" placeholder="צ׳ק-אין אחרי 15:00, מפתח מבית הקפה ליד, מזומן בלבד">'+esc(e.notes)+'</textarea></div>'+
       '</div>'+
-      drawerMapHtml(e)+
+      drawerRouteHtml(e)+
       '<div class="drawer-actions">'+
         (canEdit? '<button class="btn btn-primary" id="save">שמירה</button>':'')+
         '<button class="btn" data-close="1">'+(canEdit?"ביטול":"סגירה")+'</button>'+
