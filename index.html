@@ -173,6 +173,7 @@ a{color:var(--sea-deep)}
 .i-title{display:block; font-size:.98rem; font-weight:500; line-height:1.4}
 .i-meta{display:block; font-size:.82rem; color:var(--ink-soft); margin-top:1px; word-break:break-word}
 .i-meta .kind{font-family:var(--label); font-size:.7rem; color:var(--marker-ink); margin-inline-end:8px}
+.travel{display:inline-block; margin-inline-start:9px; color:var(--pine-deep); white-space:nowrap}
 .i-right{display:flex; align-items:center; gap:10px; white-space:nowrap}
 .i-cost{font-size:.82rem; color:var(--ink-soft); font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate}
 .i-cost.none{color:var(--terracotta)}
@@ -476,6 +477,41 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     fb:     {label:"FB",  full:"מהפוסט בפייסבוק"},
     claude: {label:"Claude", full:"הצעה של Claude"}
   };
+  const TRAVEL_TIMES = {
+    "lip-bikes":"0 דקות — משלוח לבית",
+    "lip-biogradska":"כשעה–שעה ורבע",
+    "lip-dinner":"כ־15 דקות הליכה",
+    "lip-gondola":"כשעה–שעה ורבע",
+    "lip-groceries":"כ־25–35 דקות",
+    "lip-house":"0 דקות",
+    "lip-kolasin-town":"כ־25–35 דקות",
+    "lip-mill":"כ־20–30 דקות הליכה",
+    "lip-moraca":"כ־30 דקות",
+    "lip-restday":"0 דקות",
+    "lip-river":"כ־5–10 דקות הליכה",
+    "lip-sinjajevina":"כ־25–35 דקות בדרך עפר",
+    "dur-black-lake":"כ־15–20 דקות",
+    "dur-bobotov":"כ־30–40 דקות לתחילת המסלול",
+    "dur-curevac":"כ־40–50 דקות",
+    "dur-oro":"כ־15–20 דקות",
+    "dur-rafting":"כשעה וחצי לכל כיוון",
+    "dur-ring":"כ־10–15 דקות לתחילת הלולאה",
+    "dur-zipline":"כ־40–45 דקות",
+    "bud-oldtown":"כ־5–10 דקות",
+    "bud-bluecave":"כ־35–50 דקות לנקודת היציאה בקוטור",
+    "bud-kotor":"כ־35–50 דקות",
+    "bud-pomodorino":"כ־35–50 דקות",
+    "bud-perast":"כ־50–65 דקות",
+    "bud-kotor-cablecar":"כ־30–40 דקות",
+    "bud-lovcen":"כשעה–שעה ורבע",
+    "bud-njegusi":"כ־50–60 דקות",
+    "bud-belveder":"כשעה–שעה ורבע",
+    "bud-lipa-cave":"כ־50–60 דקות",
+    "bud-pavlova":"כשעה–שעה ורבע",
+    "bud-skadar":"כשעה–שעה ורבע",
+    "bud-sveti-stefan":"כ־15–25 דקות",
+    "drive-4-budva-airport":"כ־25–35 דקות"
+  };
   const ST_HE = {idea:"רעיון", decide:"להחליט", booked:"מוזמן", done:"בוצע", skipped:"דילגנו"};
 
   /* ============ date helpers ============ */
@@ -577,6 +613,13 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     const a=has(it.actual);
     return '<span class="i-cost">'+(a?"":"~")+eur(toEur(a?it.actual:it.planned, it.cur))+'</span>';
   }
+  function travelValue(it){
+    return Object.prototype.hasOwnProperty.call(it,"travelTime") ? it.travelTime : (TRAVEL_TIMES[it.id]||"");
+  }
+  function travelLabel(it){
+    const v=travelValue(it);
+    return v ? '<span class="travel">🚗 מהבסיס: '+esc(v)+'</span>' : '';
+  }
   function itemRow(it){
     const t=TYPES[it.type]||TYPES.note;
     const when=it.time? esc(it.time)+(it.endTime?"–"+esc(it.endTime):"") : "";
@@ -587,7 +630,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     return '<div class="item s-'+esc(it.status)+'" role="button" tabindex="0"'+drag+' data-edit="'+esc(it.id)+'">'+
       '<span class="i-time">'+when+'</span>'+
       '<span class="i-body"><span class="i-title">'+esc(it.title||"ללא שם")+'</span>'+
-        '<span class="i-meta"><span class="kind">'+esc(t.label)+'</span>'+esc(it.place||"")+maplink+'</span></span>'+
+        '<span class="i-meta"><span class="kind">'+esc(t.label)+'</span>'+esc(it.place||"")+maplink+travelLabel(it)+'</span></span>'+
       '<span class="i-right">'+srcPills(it)+costLabel(it)+'<span class="chip '+esc(it.status)+'">'+esc(ST_HE[it.status]||it.status)+'</span></span>'+
     '</div>';
   }
@@ -766,6 +809,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
           '<button class="btn" data-edit="'+esc(it.id)+'">עריכה</button></div></div>'+
       '<div class="facts">'+
         fact("איפה", it.place)+
+        fact("נסיעה מהבסיס", travelValue(it))+
         (it.type==="stay"? fact("לילות", nn+" · צ׳ק-אאוט "+longDate(addDays(it.day,nn))) : "")+
         fact("אישור", it.conf, true)+
         fact("עלות", cost, true)+
@@ -926,10 +970,14 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
   /* ============ drawer ============ */
   function blank(type,day){
     return {id:"", type:type||"activity", title:"", day:day||state.day, time:"", endTime:"",
-            nights:type==="stay"?1:"", region:"", src:[], place:"", status:"idea", planned:"", actual:"",
+            nights:type==="stay"?1:"", region:"", src:[], place:"", travelTime:"", status:"idea", planned:"", actual:"",
             cur:"EUR", paidBy:"", conf:"", link:"", notes:""};
   }
-  function openEditor(it){ state.editing=Object.assign(blank(),it); drawDrawer(); }
+  function openEditor(it){
+    state.editing=Object.assign(blank(),it);
+    if(!Object.prototype.hasOwnProperty.call(it,"travelTime")) state.editing.travelTime=TRAVEL_TIMES[it.id]||"";
+    drawDrawer();
+  }
   function closeEditor(){ state.editing=null; drawDrawer(); }
 
   function readDrawer(e){
@@ -951,6 +999,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
                (e.link.indexOf("google.com/maps")>-1?"פתיחה במפות ↗":"פתיחה באתר ↗")+'</a>':'')+
       '<div class="rrows">'+
         row("איפה", e.place)+
+        row("נסיעה מהבסיס", travelValue(e))+
         (e.type==="stay"? row("לילות", nn+" · צ׳ק-אאוט "+longDate(addDays(e.day,nn))) : "")+
         row("אישור", e.conf, true)+ row("עלות", money, true)+
       '</div>'+
@@ -980,6 +1029,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
         '<div class="f"><label for="f-time">מתחיל</label><input id="f-time" type="time" value="'+esc(e.time)+'"></div>'+
         '<div class="f"><label for="f-endTime">מסתיים</label><input id="f-endTime" type="time" value="'+esc(e.endTime)+'"></div>'+
         '<div class="f full"><label for="f-place">איפה</label><input id="f-place" value="'+esc(e.place)+'" placeholder="סטארי גראד, קוטור"></div>'+
+        '<div class="f full"><label for="f-travelTime">זמן נסיעה מהבסיס</label><input id="f-travelTime" value="'+esc(e.travelTime)+'" placeholder="למשל 35 דקות או שעה ורבע"></div>'+
         '<div class="f"><label for="f-planned">עלות מתוכננת</label><input id="f-planned" type="number" step="1" value="'+esc(e.planned)+'"></div>'+
         '<div class="f"><label for="f-cur">מטבע</label><select id="f-cur">'+opt("EUR",e.cur,"אירו (€)")+opt("ILS",e.cur,"שקל (₪)")+'</select></div>'+
         '<div class="f"><label for="f-actual">שולם בפועל</label><input id="f-actual" type="number" step="1" value="'+esc(e.actual)+'"></div>'+
@@ -1010,6 +1060,7 @@ tfoot td{font-family:var(--label); border-top:1px solid var(--rule-2); backgroun
     const g=function(id){const el=document.getElementById(id); return el? el.value : "";};
     return {title:g("f-title").trim(), type:g("f-type"), status:g("f-status"), day:g("f-day"),
       nights:g("f-nights"), region:g("f-region").trim(), time:g("f-time"), endTime:g("f-endTime"), place:g("f-place").trim(),
+      travelTime:g("f-travelTime").trim(),
       planned:g("f-planned"), cur:g("f-cur"), actual:g("f-actual"), paidBy:g("f-paidBy"),
       conf:g("f-conf").trim(), link:g("f-link").trim(), notes:g("f-notes"),
       src:SRC_KEYS.filter(function(k){const el=document.getElementById("f-src-"+k); return el&&el.checked;})};
